@@ -8,8 +8,9 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-Geist: var(--font-geist-sans);
+  --font-GeistMono: var(--font-geist-mono);
+  --font-Raleway: var(--font-raleway);
 }
 
 @media (prefers-color-scheme: dark) {
