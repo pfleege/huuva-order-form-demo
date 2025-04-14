@@ -1,17 +1,20 @@
 import { Client } from "pg";
 import { NextResponse } from "next/server";
 
+import { accountType } from "@/app/lib/definitions";
+
 const client = new Client({
   connectionString: process.env.POSTGRES_URL,
 });
 
 const accounts: [
-  {
-    account_id: string;
-    account_name: string;
-    account_phone: string;
-    email: string;
-  }
+  accountType
+  // {
+  //   account_id: string;
+  //   account_name: string;
+  //   account_phone: string;
+  //   email: string;
+  // }
 ] = [
   // To add test-user -> make sure to un-comment "insertedUsers()" below
   {
