@@ -3,11 +3,31 @@
 import { useState } from "react";
 
 const Searchbar = () => {
-  const [customer, setCustomer] = useState("");
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [searchResult, setSearchResult] = useState("");
 
   const handleSubmit = async (evt: React.FormEvent) => {
     evt.preventDefault();
-    // Insert logic for db connection and send data (customer name)
+    setLoading(true);
+    try {
+      const response = await fetch(
+        `/api/account-search?email=${encodeURIComponent(email)}`
+      );
+
+      const userData = await response.json();
+
+      if (userData) {
+        console.log(userData);
+        setSearchResult(userData.email);
+      } else {
+        setSearchResult("Account not found.");
+      }
+    } catch (error) {
+      console.error("Search failed:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -15,20 +35,22 @@ const Searchbar = () => {
       <div className="bg-white p-6 rounded-lg">
         <form onSubmit={handleSubmit}>
           <input
-            type="text"
-            placeholder="Search customer"
-            value={customer}
-            onChange={(evt) => setCustomer(evt.target.value)}
+            type="email"
+            placeholder="Search customer by email"
+            value={email}
+            onChange={(evt) => setEmail(evt.target.value)}
             className="w-full p-2 mb-4 border rounded text-black"
             required
           />
           <button
             type="submit"
-            className="px-4 py-2 bg-blue-500 text-white rounded"
+            className="px-4 py-2 bg-blue-500 text-white rounded disabled:bg-gray-400"
+            disabled={loading}
           >
-            Submit
+            {loading ? "Searching..." : "Submit"}
           </button>
         </form>
+        <h1 className="text-black">{searchResult}</h1>
       </div>
     </div>
   );
