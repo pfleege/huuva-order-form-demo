@@ -15,5 +15,5 @@ export type accountType = {
   account_id: string;
   account_name: string;
   account_phone: string;
-  email: string;
+  account_email: string;
 };
