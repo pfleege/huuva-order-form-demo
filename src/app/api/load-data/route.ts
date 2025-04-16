@@ -1,29 +1,26 @@
+/* 
+To load data into database:
+1) Uncomment relevant step below
+2) Go to page http://localhost:3000/api/load-data and run page
+*/
+
 import { Client } from "pg";
 import { NextResponse } from "next/server";
 
-import { accountType } from "@/app/lib/definitions";
+// Uncomment in order to add demoData from /app/lib/demoData.ts
+// Uncomment relevant insert step below as well
+import {
+  accounts,
+  delivery_addresses,
+  order_channel,
+  orders,
+  order_items,
+  order_status_history,
+} from "@/app/lib/demoData";
 
 const client = new Client({
   connectionString: process.env.POSTGRES_URL,
 });
-
-const accounts: [
-  accountType
-  // {
-  //   account_id: string;
-  //   account_name: string;
-  //   account_phone: string;
-  //   email: string;
-  // }
-] = [
-  // To add test-user -> make sure to un-comment "insertedUsers()" below
-  {
-    account_id: "1", // CHANGE! Must be unique
-    account_name: "TestUser2",
-    account_phone: "+12345678",
-    account_email: "test@test.com", // CHANGE! Must be unique
-  },
-];
 
 async function loadTables() {
   await client.query(`
@@ -59,8 +56,7 @@ async function loadTables() {
         order_channel_id INT REFERENCES order_channel(order_channel_id),
         account_id INT REFERENCES accounts(account_id),
         address_id INT REFERENCES delivery_addresses(address_id),
-        pickup_time TIMESTAMP,
-        order_status INT
+        pickup_time TIMESTAMP
       );
     `);
 
@@ -83,8 +79,10 @@ async function loadTables() {
       );
     `);
 
-  // Un-comment to insert test-user
-
+  /* 
+  Uncomment to insert demo data from /app/lib/demoData.ts
+  */
+  // Uncomment to insert test-accounts
   const insertAccounts = await Promise.all(
     accounts.map(async (account) => {
       return client.query(
@@ -93,16 +91,94 @@ async function loadTables() {
             VALUES ($1, $2, $3)
             ON CONFLICT (account_email) DO NOTHING;
           `,
+        [account.account_name, account.account_phone, account.account_email]
+      );
+    })
+  );
+  // return insertAccounts;
+  console.log(insertAccounts);
+
+  // Un-comment to insert test-delivery_addresses
+  const insertDeliveryAddress = await Promise.all(
+    delivery_addresses.map(async (address) => {
+      return client.query(
+        `
+            INSERT INTO delivery_addresses (city, street, postal_code)
+            VALUES ($1, $2, $3)
+          `,
+        [address.city, address.street, address.postal_code]
+      );
+    })
+  );
+  // return insertDeliveryAddress;
+  console.log(insertDeliveryAddress);
+
+  // Un-comment to insert test-delivery_addresses
+  const insertOrderChannel = await Promise.all(
+    order_channel.map(async (channel) => {
+      return client.query(
+        `
+            INSERT INTO order_channel (order_channel)
+            VALUES ($1)
+          `,
+        [channel.order_channel]
+      );
+    })
+  );
+  // return insertDeliveryAddress;
+  console.log(insertOrderChannel);
+
+  // Un-comment to insert test-delivery_addresses
+  const insertOrders = await Promise.all(
+    orders.map(async (order) => {
+      return client.query(
+        `
+            INSERT INTO orders (order_created, brand_id, order_channel_id, account_id, address_id, pickup_time)
+            VALUES ($1, $2, $3, $4, $5, $6)
+          `,
         [
-          // account.account_id,
-          account.account_name,
-          account.account_phone,
-          account.account_email,
+          order.order_created,
+          order.brand_id,
+          order.order_channel_id,
+          order.account_id,
+          order.address_id,
+          order.pickup_time,
         ]
       );
     })
   );
-  return insertAccounts;
+  // return insertDeliveryAddress;
+  console.log(insertOrders);
+
+  // Un-comment to insert test-delivery_addresses
+  const insertOrderItems = await Promise.all(
+    order_items.map(async (items) => {
+      return client.query(
+        `
+            INSERT INTO order_items (item_id, item_name, item_plu, item_qty)
+            VALUES ($1, $2, $3, $4)
+          `,
+        [items.item_id, items.item_name, items.item_plu, items.item_qty]
+      );
+    })
+  );
+  // return insertDeliveryAddress;
+  console.log(insertOrderItems);
+
+  // Un-comment to insert test-delivery_addresses
+  const insertOrderStatusHistory = await Promise.all(
+    order_status_history.map(async (history) => {
+      return client.query(
+        `
+            INSERT INTO order_status_history (order_id, order_status, status_update)
+            VALUES ($1, $2, $3)
+          `,
+        [history.order_id, history.order_status, history.status_update]
+      );
+    })
+  );
+  // return insertDeliveryAddress;
+  console.log(insertOrderStatusHistory);
 }
 
 export async function GET() {
