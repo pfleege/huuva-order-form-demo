@@ -49,12 +49,15 @@ export const delivery_addresses: deliveryAddressType[] = [
 export const order_channel: orderChannelType[] = [
   // order_channel_id is auto-incremented
   {
+    order_channel_id: 1,
     order_channel: "phone",
   },
   {
+    order_channel_id: 2,
     order_channel: "email",
   },
   {
+    order_channel_id: 3,
     order_channel: "online",
   },
 ];

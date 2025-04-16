@@ -24,6 +24,7 @@ export type deliveryAddressType = {
 };
 
 export type orderChannelType = {
+  order_channel_id: number;
   order_channel: string;
 };
 

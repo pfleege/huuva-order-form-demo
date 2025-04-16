@@ -43,7 +43,7 @@ async function loadTables() {
 
   await client.query(`
         CREATE TABLE IF NOT EXISTS order_channel (
-          order_channel_id SERIAL PRIMARY KEY,
+          order_channel_id INT PRIMARY KEY,
           order_channel VARCHAR(255)
         );
     `);
@@ -113,22 +113,22 @@ async function loadTables() {
   // return insertDeliveryAddress;
   console.log(insertDeliveryAddress);
 
-  // Un-comment to insert test-delivery_addresses
+  // Un-comment to insert test-order-channels
   const insertOrderChannel = await Promise.all(
     order_channel.map(async (channel) => {
       return client.query(
         `
-            INSERT INTO order_channel (order_channel)
-            VALUES ($1)
+            INSERT INTO order_channel (order_channel_id, order_channel)
+            VALUES ($1, $2)
           `,
-        [channel.order_channel]
+        [channel.order_channel_id, channel.order_channel]
       );
     })
   );
   // return insertDeliveryAddress;
   console.log(insertOrderChannel);
 
-  // Un-comment to insert test-delivery_addresses
+  // Un-comment to insert test-orders
   const insertOrders = await Promise.all(
     orders.map(async (order) => {
       return client.query(
@@ -150,7 +150,7 @@ async function loadTables() {
   // return insertDeliveryAddress;
   console.log(insertOrders);
 
-  // Un-comment to insert test-delivery_addresses
+  // Un-comment to insert test-order_items
   const insertOrderItems = await Promise.all(
     order_items.map(async (items) => {
       return client.query(
@@ -165,7 +165,7 @@ async function loadTables() {
   // return insertDeliveryAddress;
   console.log(insertOrderItems);
 
-  // Un-comment to insert test-delivery_addresses
+  // Un-comment to insert test-order_history
   const insertOrderStatusHistory = await Promise.all(
     order_status_history.map(async (history) => {
       return client.query(
