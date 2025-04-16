@@ -8,7 +8,7 @@ import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const email = searchParams.get("email");
+  const email = searchParams.get("account_email");
 
   if (!email) {
     return NextResponse.json(
@@ -19,7 +19,25 @@ export async function GET(request: Request) {
   try {
     const sql = neon(process.env.DATABASE_URL!);
     // Change SQL based on infomration need - currently only account information provided (name, phone, email)
-    const [user] = await sql`SELECT * FROM accounts WHERE email = ${email}`;
+    const [user] =
+      // await sql`SELECT * FROM accounts WHERE account_email = ${email}`;
+      await sql`
+      SELECT 
+      acc.account_name, 
+      TO_CHAR(ord.order_created, 'DD-MM-YYYY at HH24:MI') AS order_created, 
+      ost.order_status, 
+      TO_CHAR(ost.status_update, 'DD-MM-YYYY at HH24:MI') AS status_update
+      FROM accounts acc
+      INNER JOIN orders ord ON acc.account_id = ord.account_id
+      INNER JOIN (
+        SELECT DISTINCT ON (order_id) *
+        FROM order_status_history
+        ORDER BY order_id, status_update DESC
+      ) AS ost ON ord.order_id = ost.order_id
+      WHERE acc.account_email = ${email}
+
+      
+      `;
 
     return NextResponse.json(user || null);
   } catch (error) {

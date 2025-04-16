@@ -120,6 +120,11 @@ export const order_status_history: orderStatusHistoryType[] = [
     status_update: "2025-01-22T22:30:00Z",
   },
   {
+    order_id: 1,
+    order_status: 3,
+    status_update: "2025-01-22T22:45:00Z",
+  },
+  {
     order_id: 2,
     order_status: 1,
     status_update: "2025-02-15T12:30:00Z",
