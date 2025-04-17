@@ -1,29 +1,13 @@
 "use client";
 
 import { useState } from "react";
-
-interface OrderFormProps {
-  userData?: {
-    account_email: string;
-    account_id: number;
-    account_name: string;
-    account_phone: string;
-    address_id: number;
-    brand_id: number;
-    order_channel_id: number;
-    order_created: string;
-    order_id: number;
-    pickup_time: string;
-    order_status: number;
-    status_update: string;
-  }; // Simplified userData type
-}
+import { OrderFormProps } from "@/app/lib/definitions";
 
 const Searchbar = () => {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [searchResult, setSearchResult] =
-    useState<OrderFormProps["userData"]>();
+    useState<OrderFormProps["orderData"]>();
 
   const handleSubmit = async (evt: React.FormEvent) => {
     evt.preventDefault();
@@ -51,7 +35,7 @@ const Searchbar = () => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+    <div className="bg-black bg-opacity-50 flex justify-center items-center">
       <div className="bg-white p-6 rounded-lg">
         <div className="flex justify-center">
           <form className="flex gap-2 text-2xl" onSubmit={handleSubmit}>

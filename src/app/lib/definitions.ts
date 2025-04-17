@@ -1,5 +1,5 @@
 /*
-Example:
+TYPE DEFINITION EXAMPLE:
 export type Invoice = {
     id: string;
     customer_id: string;
@@ -11,6 +11,7 @@ export type Invoice = {
 };
 */
 
+// TYPES:
 export type accountType = {
   account_name: string;
   account_phone: string;
@@ -49,3 +50,21 @@ export type orderStatusHistoryType = {
   order_status: number;
   status_update: string;
 };
+
+// INTERFACES:
+export interface OrderFormProps {
+  orderData?: {
+    account_email: string;
+    account_id: number;
+    account_name: string;
+    account_phone: string;
+    address_id: number;
+    brand_id: number;
+    order_channel_id: number;
+    order_created: string;
+    order_id: number;
+    pickup_time: string;
+    order_status: number;
+    status_update: string;
+  };
+}
