@@ -78,7 +78,23 @@ const ActiveOrders = () => {
               // Next step: Add API for adding new status
               // For order status: new row in order_status_history table
               // For order item update: replace current data in table
-              alert("Order status updated!");
+              try {
+                const response = await fetch("/api/order-update", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                    order_id: selectedOrder.order_id,
+                    order_status: selectedOrder.order_status,
+                  }),
+                });
+                if (!response.ok) {
+                  throw new Error("Failed to update order status");
+                }
+                alert("Order status has been updated!");
+              } catch (error) {
+                alert("There was an error updating the order status.");
+                console.error(error);
+              }
             }}
           >
             <div className="mb-2">
