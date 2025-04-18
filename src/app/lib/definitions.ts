@@ -29,25 +29,40 @@ export type orderChannelType = {
   order_channel: string;
 };
 
-export type orderType = {
+export type orderSetType = {
   order_created: string;
-  brand_id: number;
   order_channel_id: number;
   account_id: number;
   address_id: number;
   pickup_time: string;
 };
 
+export type ordersType = {
+  order_id: number;
+  brand_id: number;
+};
+
 export type orderItemsType = {
+  brand_name: string;
+  item_id: number;
+  item_qty: number;
+  order_item_status_id: number;
+};
+
+export type itemsType = {
   item_id: number;
   item_name: string;
   item_plu: string;
-  item_qty: number;
+};
+
+export type orderStatusType = {
+  order_status_id: number;
+  order_status: string;
 };
 
 export type orderStatusHistoryType = {
+  order_status_id: number;
   order_id: number;
-  order_status: number;
   status_update: string;
 };
 

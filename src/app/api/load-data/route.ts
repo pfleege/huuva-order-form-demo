@@ -13,8 +13,11 @@ import {
   accounts,
   delivery_addresses,
   order_channel,
+  order_set,
   orders,
+  items,
   order_items,
+  order_status,
   order_status_history,
 } from "@/app/lib/demoData";
 
@@ -49,10 +52,16 @@ async function loadTables() {
     `);
 
   await client.query(`
-      CREATE TABLE IF NOT EXISTS orders (
+      CREATE TABLE IF NOT EXISTS order_status (
+        order_status_id INT PRIMARY KEY,
+        order_status VARCHAR(255)
+      );
+    `);
+
+  await client.query(`
+      CREATE TABLE IF NOT EXISTS order_set (
         order_id SERIAL PRIMARY KEY,
         order_created TIMESTAMP DEFAULT NOW(),
-        brand_id INT,
         order_channel_id INT REFERENCES order_channel(order_channel_id),
         account_id INT REFERENCES accounts(account_id),
         address_id INT REFERENCES delivery_addresses(address_id),
@@ -61,20 +70,43 @@ async function loadTables() {
     `);
 
   await client.query(`
+      CREATE TABLE IF NOT EXISTS items (
+        item_id SERIAL PRIMARY KEY,
+        item_name VARCHAR(255),
+        item_plu VARCHAR(255)
+      );
+    `);
+
+  await client.query(`
+      CREATE TABLE IF NOT EXISTS order_status (
+        order_status_id SERIAL PRIMARY KEY,
+        order_status VARCHAR(255)
+      );
+    `);
+
+  await client.query(`
       CREATE TABLE IF NOT EXISTS order_items (
         brand_id SERIAL PRIMARY KEY,
-        item_id INT,
-        item_name VARCHAR(255),
-        item_plu VARCHAR(255),
-        item_qty INT
+        brand_name VARCHAR(255),
+        item_id INT REFERENCES items(item_id),
+        item_qty INT,
+        order_item_status_id INT REFERENCES order_status(order_status_id)
+      );
+    `);
+
+  await client.query(`
+      CREATE TABLE IF NOT EXISTS orders (
+        orders_id SERIAL PRIMARY KEY,
+        order_id INT REFERENCES order_set(order_id),
+        brand_id INT REFERENCES order_items(brand_id)
       );
     `);
 
   await client.query(`
       CREATE TABLE IF NOT EXISTS order_status_history (
         history_id SERIAL PRIMARY KEY,
-        order_id INT REFERENCES orders(order_id),
-        order_status INT,
+        order_id INT REFERENCES order_set(order_id),
+        order_status_id INT REFERENCES order_status(order_status_id),
         status_update TIMESTAMP DEFAULT NOW()
       );
     `);
@@ -128,17 +160,31 @@ async function loadTables() {
   // return insertDeliveryAddress;
   console.log(insertOrderChannel);
 
-  // Un-comment to insert test-orders
-  const insertOrders = await Promise.all(
-    orders.map(async (order) => {
+  // Un-comment to insert test-order-channels
+  const insertOrderStatus = await Promise.all(
+    order_status.map(async (status) => {
       return client.query(
         `
-            INSERT INTO orders (order_created, brand_id, order_channel_id, account_id, address_id, pickup_time)
-            VALUES ($1, $2, $3, $4, $5, $6)
+            INSERT INTO order_status (order_status_id, order_status)
+            VALUES ($1, $2)
+          `,
+        [status.order_status_id, status.order_status]
+      );
+    })
+  );
+  // return insertDeliveryAddress;
+  console.log(insertOrderStatus);
+
+  // Un-comment to insert test-orders
+  const insertOrderSet = await Promise.all(
+    order_set.map(async (order) => {
+      return client.query(
+        `
+            INSERT INTO order_set (order_created, order_channel_id, account_id, address_id, pickup_time)
+            VALUES ($1, $2, $3, $4, $5)
           `,
         [
           order.order_created,
-          order.brand_id,
           order.order_channel_id,
           order.account_id,
           order.address_id,
@@ -148,32 +194,67 @@ async function loadTables() {
     })
   );
   // return insertDeliveryAddress;
-  console.log(insertOrders);
+  console.log(insertOrderSet);
+
+  // Un-comment to insert test-order_items
+  const insertItems = await Promise.all(
+    items.map(async (item) => {
+      return client.query(
+        `
+            INSERT INTO items (item_id, item_name, item_plu)
+            VALUES ($1, $2, $3)
+          `,
+        [item.item_id, item.item_name, item.item_plu]
+      );
+    })
+  );
+  // return insertDeliveryAddress;
+  console.log(insertItems);
 
   // Un-comment to insert test-order_items
   const insertOrderItems = await Promise.all(
-    order_items.map(async (items) => {
+    order_items.map(async (order_item) => {
       return client.query(
         `
-            INSERT INTO order_items (item_id, item_name, item_plu, item_qty)
+            INSERT INTO order_items (brand_name, item_id, item_qty, order_item_status_id)
             VALUES ($1, $2, $3, $4)
           `,
-        [items.item_id, items.item_name, items.item_plu, items.item_qty]
+        [
+          order_item.brand_name,
+          order_item.item_id,
+          order_item.item_qty,
+          order_item.order_item_status_id,
+        ]
       );
     })
   );
   // return insertDeliveryAddress;
   console.log(insertOrderItems);
 
+  // Un-comment to insert test-orders
+  const insertOrders = await Promise.all(
+    orders.map(async (order) => {
+      return client.query(
+        `
+            INSERT INTO orders (order_id, brand_id)
+            VALUES ($1, $2)
+          `,
+        [order.order_id, order.brand_id]
+      );
+    })
+  );
+  // return insertDeliveryAddress;
+  console.log(insertOrders);
+
   // Un-comment to insert test-order_history
   const insertOrderStatusHistory = await Promise.all(
     order_status_history.map(async (history) => {
       return client.query(
         `
-            INSERT INTO order_status_history (order_id, order_status, status_update)
+            INSERT INTO order_status_history (order_status_id, order_id, status_update)
             VALUES ($1, $2, $3)
           `,
-        [history.order_id, history.order_status, history.status_update]
+        [history.order_status_id, history.order_id, history.status_update]
       );
     })
   );

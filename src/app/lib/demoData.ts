@@ -2,8 +2,11 @@ import {
   accountType,
   deliveryAddressType,
   orderChannelType,
-  orderType,
+  orderSetType,
+  ordersType,
   orderItemsType,
+  itemsType,
+  orderStatusType,
   orderStatusHistoryType,
 } from "./definitions";
 
@@ -62,11 +65,30 @@ export const order_channel: orderChannelType[] = [
   },
 ];
 
-export const orders: orderType[] = [
+export const order_status: orderStatusType[] = [
+  // order_channel_id is auto-incremented
+  {
+    order_status_id: 1,
+    order_status: "order pending",
+  },
+  {
+    order_status_id: 2,
+    order_status: "order in progress",
+  },
+  {
+    order_status_id: 3,
+    order_status: "order ready for delivery",
+  },
+  {
+    order_status_id: 4,
+    order_status: "order delivered",
+  },
+];
+
+export const order_set: orderSetType[] = [
   // order_id is auto-incremented
   {
     order_created: "2025-01-22T20:00:00Z",
-    brand_id: 1,
     order_channel_id: 1,
     account_id: 1,
     address_id: 1,
@@ -74,7 +96,6 @@ export const orders: orderType[] = [
   },
   {
     order_created: "2025-02-15T10:00:00Z",
-    brand_id: 2,
     order_channel_id: 3,
     account_id: 3,
     address_id: 3,
@@ -82,7 +103,6 @@ export const orders: orderType[] = [
   },
   {
     order_created: "2025-04-02T18:45:00Z",
-    brand_id: 3,
     order_channel_id: 2,
     account_id: 2,
     address_id: 2,
@@ -90,48 +110,88 @@ export const orders: orderType[] = [
   },
 ];
 
+export const orders: ordersType[] = [
+  // order_id is auto-incremented
+  {
+    order_id: 1,
+    brand_id: 2,
+  },
+  {
+    order_id: 2,
+    brand_id: 2,
+  },
+  {
+    order_id: 2,
+    brand_id: 3,
+  },
+
+  {
+    order_id: 3,
+    brand_id: 3,
+  },
+];
+
 export const order_items: orderItemsType[] = [
+  // brand_id is auto-incremented
+  {
+    brand_name: "Brand_1",
+    item_id: 3,
+    item_qty: 4,
+    order_item_status_id: 1,
+  },
+  {
+    brand_name: "Brand_2",
+    item_id: 2,
+    item_qty: 2,
+    order_item_status_id: 2,
+  },
+  {
+    brand_name: "Brand_3",
+    item_id: 1,
+    item_qty: 5,
+    order_item_status_id: 1,
+  },
+];
+
+export const items: itemsType[] = [
   // brand_id is auto-incremented
   {
     item_id: 3,
     item_name: "Item_3",
     item_plu: "CAT3-0001",
-    item_qty: 4,
-  },
-  {
-    item_id: 1,
-    item_name: "Item_2",
-    item_plu: "CAT2-0001",
-    item_qty: 2,
   },
   {
     item_id: 2,
+    item_name: "Item_2",
+    item_plu: "CAT2-0001",
+  },
+  {
+    item_id: 1,
     item_name: "Item_1",
     item_plu: "CAT1-0001",
-    item_qty: 5,
   },
 ];
 
 export const order_status_history: orderStatusHistoryType[] = [
   // brand_id is auto-incremented
   {
+    order_status_id: 2,
     order_id: 1,
-    order_status: 2,
     status_update: "2025-01-22T22:30:00Z",
   },
   {
+    order_status_id: 3,
     order_id: 1,
-    order_status: 3,
     status_update: "2025-01-22T22:45:00Z",
   },
   {
+    order_status_id: 1,
     order_id: 2,
-    order_status: 1,
     status_update: "2025-02-15T12:30:00Z",
   },
   {
+    order_status_id: 4,
     order_id: 3,
-    order_status: 4,
     status_update: "2025-04-02T18:45:00Z",
   },
 ];
