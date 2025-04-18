@@ -1,4 +1,5 @@
 import Searchbar from "@/components/Searchbar";
+import ActiveOrders from "@/components/OrderSearch";
 
 export default function Home() {
   return (
@@ -9,6 +10,7 @@ export default function Home() {
         ducimus illo eum neque voluptas error architecto libero, facere tempore!
       </p>
       <Searchbar />
+      <ActiveOrders />
     </div>
   );
 }
