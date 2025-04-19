@@ -19,21 +19,19 @@ export async function GET(request: Request) {
   try {
     const sql = neon(process.env.DATABASE_URL!);
     // Change SQL based on infomration need - currently only account information provided (name, phone, email)
-    const [user] =
-      // await sql`SELECT * FROM accounts WHERE account_email = ${email}`;
-      await sql`
+    const [user] = await sql`
       SELECT 
       acc.account_name, 
-      TO_CHAR(ord.order_created, 'DD-MM-YYYY at HH24:MI') AS order_created, 
+      TO_CHAR(orse.order_created, 'DD-MM-YYYY at HH24:MI') AS order_created, 
       ost.order_status, 
       TO_CHAR(ost.status_update, 'DD-MM-YYYY at HH24:MI') AS status_update
       FROM accounts acc
-      INNER JOIN orders ord ON acc.account_id = ord.account_id
+      INNER JOIN order_set orse ON acc.account_id = orse.account_id
       INNER JOIN (
         SELECT DISTINCT ON (order_id) *
-        FROM order_status_history
+        FROM order_status_history INNER JOIN order_status os ON order_status_history.order_status_id = os.order_status_id
         ORDER BY order_id, status_update DESC
-      ) AS ost ON ord.order_id = ost.order_id
+      ) AS ost ON orse.order_id = ost.order_id
       WHERE acc.account_email = ${email}
 
       

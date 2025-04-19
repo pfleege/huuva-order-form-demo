@@ -79,7 +79,8 @@ export interface OrderFormProps {
     order_created: string;
     order_id: number;
     pickup_time: string;
-    order_status: number;
+    order_status_id: number;
+    order_status: string;
     status_update: string;
   };
 }

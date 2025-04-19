@@ -8,12 +8,13 @@ import { NextResponse } from "next/server";
 export async function GET() {
   try {
     const sql = neon(process.env.DATABASE_URL!);
-    // Exclude delivered orders (here defined as order_status = 4)
-    const result = await sql`SELECT * FROM orders ord INNER JOIN (
+    // Exclude delivered orders (order_status_id = 4)
+    const result = await sql`
+        SELECT * FROM order_set orse INNER JOIN (
         SELECT DISTINCT ON (order_id) *
         FROM order_status_history
         ORDER BY order_id, status_update DESC
-      ) AS ost ON ord.order_id = ost.order_id WHERE ost.order_status <> 4`;
+      ) AS osth ON orse.order_id = osth.order_id WHERE osth.order_status_id <> 4`;
     // Verify via console.log that result is logged as an array
     console.log("API orders:", result);
     return NextResponse.json(result || []);

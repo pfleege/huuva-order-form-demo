@@ -3,12 +3,12 @@ import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   try {
-    const { order_id, order_status } = await req.json();
+    const { order_id, order_status_id } = await req.json();
     const sql = neon(process.env.DATABASE_URL!);
 
     await sql`
-      INSERT INTO order_status_history (order_id, order_status)
-      VALUES (${order_id}, ${order_status})
+      INSERT INTO order_status_history (order_id, order_status_id)
+      VALUES (${order_id}, ${order_status_id})
     `;
 
     return NextResponse.json({ success: true });

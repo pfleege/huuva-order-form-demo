@@ -84,7 +84,7 @@ const ActiveOrders = () => {
                   headers: { "Content-Type": "application/json" },
                   body: JSON.stringify({
                     order_id: selectedOrder.order_id,
-                    order_status: selectedOrder.order_status,
+                    order_status_id: selectedOrder.order_status_id,
                   }),
                 });
                 if (!response.ok) {
@@ -101,11 +101,11 @@ const ActiveOrders = () => {
               <label className="block font-semibold">Order Status:</label>
               <input
                 className="border px-2 py-1 rounded"
-                value={selectedOrder.order_status}
+                value={selectedOrder.order_status_id}
                 onChange={(evt) =>
                   setSelectedOrder({
                     ...selectedOrder,
-                    order_status: parseInt(evt.target.value, 10),
+                    order_status_id: parseInt(evt.target.value, 10),
                   })
                 }
               />
