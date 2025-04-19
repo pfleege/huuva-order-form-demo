@@ -84,3 +84,11 @@ export interface OrderFormProps {
     status_update: string;
   };
 }
+
+export interface AddOrderProps {
+  orderData?: {
+    account_name: string;
+    account_email: string;
+    account_phone: string;
+  };
+}
