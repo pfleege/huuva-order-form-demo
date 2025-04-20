@@ -13,8 +13,8 @@ import {
   accounts,
   delivery_addresses,
   order_channel,
-  order_set,
   orders,
+  brands,
   items,
   order_items,
   order_status,
@@ -31,7 +31,11 @@ async function loadTables() {
         account_id SERIAL PRIMARY KEY,
         account_name VARCHAR(255),
         account_phone VARCHAR(50),
-        account_email VARCHAR(255) UNIQUE
+        account_email VARCHAR(255),
+        -- Add a unique constraint to ensure no duplicate accounts
+        -- based on name, email, and phone number
+        CONSTRAINT unique_account_combo 
+          UNIQUE (account_name, account_email, account_phone)
       );
     `);
 
@@ -40,7 +44,11 @@ async function loadTables() {
         address_id SERIAL PRIMARY KEY,
         city VARCHAR(100),
         street VARCHAR(255),
-        postal_code VARCHAR(20)
+        postal_code VARCHAR(20),
+        -- Add a unique constraint to ensure no duplicate
+        -- city/street/postal_code combinations
+        CONSTRAINT unique_address_combo 
+          UNIQUE (city, street, postal_code)
       );
     `);
 
@@ -59,7 +67,7 @@ async function loadTables() {
     `);
 
   await client.query(`
-      CREATE TABLE IF NOT EXISTS order_set (
+      CREATE TABLE IF NOT EXISTS orders (
         order_id SERIAL PRIMARY KEY,
         order_created TIMESTAMP DEFAULT NOW(),
         order_channel_id INT REFERENCES order_channel(order_channel_id),
@@ -71,23 +79,31 @@ async function loadTables() {
 
   await client.query(`
       CREATE TABLE IF NOT EXISTS items (
-        item_id SERIAL PRIMARY KEY,
+        item_id INT PRIMARY KEY,
         item_name VARCHAR(255),
         item_plu VARCHAR(255)
       );
     `);
 
   await client.query(`
+      CREATE TABLE IF NOT EXISTS brands (
+        brand_id INT PRIMARY KEY,
+        brand_name VARCHAR(255)
+      );
+    `);
+
+  await client.query(`
       CREATE TABLE IF NOT EXISTS order_status (
-        order_status_id SERIAL PRIMARY KEY,
+        order_status_id INT PRIMARY KEY,
         order_status VARCHAR(255)
       );
     `);
 
   await client.query(`
       CREATE TABLE IF NOT EXISTS order_items (
-        brand_id SERIAL PRIMARY KEY,
-        brand_name VARCHAR(255),
+        order_items_id SERIAL PRIMARY KEY,
+        order_id INT REFERENCES orders(order_id),
+        brand_id INT REFERENCES brands(brand_id),
         item_id INT REFERENCES items(item_id),
         item_qty INT,
         order_item_status_id INT REFERENCES order_status(order_status_id)
@@ -95,17 +111,9 @@ async function loadTables() {
     `);
 
   await client.query(`
-      CREATE TABLE IF NOT EXISTS orders (
-        orders_id SERIAL PRIMARY KEY,
-        order_id INT REFERENCES order_set(order_id),
-        brand_id INT REFERENCES order_items(brand_id)
-      );
-    `);
-
-  await client.query(`
       CREATE TABLE IF NOT EXISTS order_status_history (
         history_id SERIAL PRIMARY KEY,
-        order_id INT REFERENCES order_set(order_id),
+        order_id INT REFERENCES orders(order_id),
         order_status_id INT REFERENCES order_status(order_status_id),
         status_update TIMESTAMP DEFAULT NOW()
       );
@@ -121,7 +129,10 @@ async function loadTables() {
         `
             INSERT INTO accounts (account_name, account_phone, account_email)
             VALUES ($1, $2, $3)
-            ON CONFLICT (account_email) DO NOTHING;
+            ON CONFLICT (account_name, account_email, account_phone)
+            DO UPDATE SET 
+              account_name = EXCLUDED.account_name
+            RETURNING account_id;
           `,
         [account.account_name, account.account_phone, account.account_email]
       );
@@ -177,10 +188,10 @@ async function loadTables() {
 
   // Un-comment to insert test-orders
   const insertOrderSet = await Promise.all(
-    order_set.map(async (order) => {
+    orders.map(async (order) => {
       return client.query(
         `
-            INSERT INTO order_set (order_created, order_channel_id, account_id, address_id, pickup_time)
+            INSERT INTO orders (order_created, order_channel_id, account_id, address_id, pickup_time)
             VALUES ($1, $2, $3, $4, $5)
           `,
         [
@@ -195,6 +206,21 @@ async function loadTables() {
   );
   // return insertDeliveryAddress;
   console.log(insertOrderSet);
+
+  // Un-comment to insert test-order_items
+  const insertBrands = await Promise.all(
+    brands.map(async (brand) => {
+      return client.query(
+        `
+            INSERT INTO brands (brand_id, brand_name)
+            VALUES ($1, $2)
+          `,
+        [brand.brand_id, brand.brand_name]
+      );
+    })
+  );
+  // return insertDeliveryAddress;
+  console.log(insertBrands);
 
   // Un-comment to insert test-order_items
   const insertItems = await Promise.all(
@@ -216,11 +242,12 @@ async function loadTables() {
     order_items.map(async (order_item) => {
       return client.query(
         `
-            INSERT INTO order_items (brand_name, item_id, item_qty, order_item_status_id)
-            VALUES ($1, $2, $3, $4)
+            INSERT INTO order_items (order_id, brand_id, item_id, item_qty, order_item_status_id)
+            VALUES ($1, $2, $3, $4, $5)
           `,
         [
-          order_item.brand_name,
+          order_item.order_id,
+          order_item.brand_id,
           order_item.item_id,
           order_item.item_qty,
           order_item.order_item_status_id,
@@ -230,21 +257,6 @@ async function loadTables() {
   );
   // return insertDeliveryAddress;
   console.log(insertOrderItems);
-
-  // Un-comment to insert test-orders
-  const insertOrders = await Promise.all(
-    orders.map(async (order) => {
-      return client.query(
-        `
-            INSERT INTO orders (order_id, brand_id)
-            VALUES ($1, $2)
-          `,
-        [order.order_id, order.brand_id]
-      );
-    })
-  );
-  // return insertDeliveryAddress;
-  console.log(insertOrders);
 
   // Un-comment to insert test-order_history
   const insertOrderStatusHistory = await Promise.all(

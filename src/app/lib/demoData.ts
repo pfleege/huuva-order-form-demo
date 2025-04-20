@@ -2,9 +2,9 @@ import {
   accountType,
   deliveryAddressType,
   orderChannelType,
-  orderSetType,
   ordersType,
   orderItemsType,
+  brandsType,
   itemsType,
   orderStatusType,
   orderStatusHistoryType,
@@ -85,7 +85,7 @@ export const order_status: orderStatusType[] = [
   },
 ];
 
-export const order_set: orderSetType[] = [
+export const orders: ordersType[] = [
   // order_id is auto-incremented
   {
     order_created: "2025-01-22T20:00:00Z",
@@ -110,51 +110,47 @@ export const order_set: orderSetType[] = [
   },
 ];
 
-export const orders: ordersType[] = [
-  // order_id is auto-incremented
-  {
-    order_id: 1,
-    brand_id: 2,
-  },
-  {
-    order_id: 2,
-    brand_id: 2,
-  },
-  {
-    order_id: 2,
-    brand_id: 3,
-  },
-
-  {
-    order_id: 3,
-    brand_id: 3,
-  },
-];
-
 export const order_items: orderItemsType[] = [
   // brand_id is auto-incremented
   {
-    brand_name: "Brand_1",
+    order_id: 1,
+    brand_id: 2,
     item_id: 3,
     item_qty: 4,
     order_item_status_id: 1,
   },
   {
-    brand_name: "Brand_2",
+    order_id: 2,
+    brand_id: 1,
     item_id: 2,
     item_qty: 2,
     order_item_status_id: 2,
   },
   {
-    brand_name: "Brand_3",
+    order_id: 3,
+    brand_id: 3,
     item_id: 1,
     item_qty: 5,
     order_item_status_id: 1,
   },
 ];
 
+export const brands: brandsType[] = [
+  {
+    brand_id: 1,
+    brand_name: "Brand_1",
+  },
+  {
+    brand_id: 2,
+    brand_name: "Brand_2",
+  },
+  {
+    brand_id: 3,
+    brand_name: "Brand_3",
+  },
+];
+
 export const items: itemsType[] = [
-  // brand_id is auto-incremented
   {
     item_id: 3,
     item_name: "Item_3",

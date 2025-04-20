@@ -25,11 +25,11 @@ export type deliveryAddressType = {
 };
 
 export type orderChannelType = {
-  order_channel_id: number;
+  order_channel_id: number; // Manually set in the database
   order_channel: string;
 };
 
-export type orderSetType = {
+export type ordersType = {
   order_created: string;
   order_channel_id: number;
   account_id: number;
@@ -37,26 +37,27 @@ export type orderSetType = {
   pickup_time: string;
 };
 
-export type ordersType = {
-  order_id: number;
-  brand_id: number;
+export type brandsType = {
+  brand_id: number; // Manually set in the database
+  brand_name: string;
 };
 
 export type orderItemsType = {
-  brand_name: string;
+  order_item_status_id: number;
+  order_id: number;
+  brand_id: number;
   item_id: number;
   item_qty: number;
-  order_item_status_id: number;
 };
 
 export type itemsType = {
-  item_id: number;
+  item_id: number; // Manually set in the database
   item_name: string;
   item_plu: string;
 };
 
 export type orderStatusType = {
-  order_status_id: number;
+  order_status_id: number; // Manually set in the database
   order_status: string;
 };
 
@@ -85,10 +86,20 @@ export interface OrderFormProps {
   };
 }
 
+export interface DishOrder {
+  brand_name: string;
+  item_name: string;
+  item_qty: number;
+}
+
 export interface AddOrderProps {
   orderData?: {
     account_name: string;
     account_email: string;
     account_phone: string;
+    city: string;
+    street: string;
+    postal_code: string;
+    dishes: DishOrder[]; // Add array of DishOrder objects
   };
 }
