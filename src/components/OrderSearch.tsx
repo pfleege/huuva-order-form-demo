@@ -5,6 +5,7 @@ import { OrderFormProps } from "@/app/lib/definitions";
 
 const ActiveOrders = () => {
   const [loading, setLoading] = useState(false);
+  const [editOrderVisible, setEditOrderVisible] = useState(false);
   const [searchResult, setSearchResult] = useState<
     OrderFormProps["orderData"][]
   >([]);
@@ -34,6 +35,18 @@ const ActiveOrders = () => {
 
   const handleClick = (order: OrderFormProps["orderData"]) => {
     setSelectedOrder(order);
+    setEditOrderVisible(true);
+    console.log("Selected order:", order);
+  };
+
+  // Handle changes for dish fields
+  const handleStatusChange = (evt: React.ChangeEvent<HTMLSelectElement>) => {
+    if (!selectedOrder) return;
+
+    setSelectedOrder({
+      ...selectedOrder,
+      order_status_id: parseInt(evt.target.value, 10),
+    });
   };
 
   return (
@@ -59,17 +72,21 @@ const ActiveOrders = () => {
                 className="mb-4 border-b pb-2 cursor-pointer hover:bg-gray-100"
               >
                 <p>
-                  <strong>Account Name:</strong> {order?.account_id}
+                  <strong>Account Name:</strong> {order?.account_name}
                 </p>
                 <p>
                   <strong>Order Created:</strong> {order?.order_created}
+                </p>
+
+                <p>
+                  <strong>Order Status:</strong> {order?.order_status}
                 </p>
               </div>
             ))}
           </div>
         )}
       </div>
-      {selectedOrder && (
+      {selectedOrder && editOrderVisible && (
         <div className="p-4 mt-4 border rounded bg-gray-50 text-black">
           <h3 className="font-bold mb-2">Edit Order</h3>
           <form
@@ -90,6 +107,8 @@ const ActiveOrders = () => {
                 if (!response.ok) {
                   throw new Error("Failed to update order status");
                 }
+                setEditOrderVisible(false);
+                setSearchResult([]);
                 alert("Order status has been updated!");
               } catch (error) {
                 alert("There was an error updating the order status.");
@@ -99,7 +118,18 @@ const ActiveOrders = () => {
           >
             <div className="mb-2">
               <label className="block font-semibold">Order Status:</label>
-              <input
+              <select
+                name="order_status_id"
+                value={selectedOrder.order_status_id}
+                className="border-[1px] w-[285px] px-2 py-1 rounded"
+                onChange={(e) => handleStatusChange(e)}
+              >
+                <option value="1">order pending</option>
+                <option value="2">order in progress</option>
+                <option value="3">order ready for delivery</option>
+                <option value="4">order delivered</option>
+              </select>
+              {/* <input
                 className="border px-2 py-1 rounded"
                 value={selectedOrder.order_status_id}
                 onChange={(evt) =>
@@ -108,7 +138,7 @@ const ActiveOrders = () => {
                     order_status_id: parseInt(evt.target.value, 10),
                   })
                 }
-              />
+              /> */}
             </div>
             {/* Insert other relevant order fields */}
             <button

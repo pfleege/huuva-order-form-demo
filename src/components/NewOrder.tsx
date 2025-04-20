@@ -10,7 +10,14 @@ const initialOrderData = {
   city: "",
   street: "",
   postal_code: "",
-  dishes: [{ brand_name: "", item_name: "", item_qty: 1 }],
+  dishes: [
+    {
+      brand_name: "",
+      item_name: "",
+      item_qty: 1,
+      order_status: "order pending",
+    },
+  ],
 };
 
 const NewOrder = () => {
@@ -61,7 +68,12 @@ const NewOrder = () => {
       ...prev!,
       dishes: [
         ...(prev?.dishes || []),
-        { brand_name: "", item_name: "", item_qty: 1 },
+        {
+          brand_name: "",
+          item_name: "",
+          item_qty: 1,
+          order_status: "order pending",
+        },
       ],
     }));
   };
@@ -100,6 +112,7 @@ const NewOrder = () => {
               console.error(error);
             }
             setLoading(false);
+            setOrderData(initialOrderData);
           }}
         >
           <div className="flex mb-2 text-2xl justify-between">
