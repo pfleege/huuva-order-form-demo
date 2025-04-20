@@ -35,7 +35,7 @@ const Searchbar = () => {
   };
 
   return (
-    <div className="bg-black bg-opacity-50 flex justify-center items-center">
+    <div className="bg-opacity-50 flex justify-center items-center my-20">
       <div className="bg-[url('/modalBg.jpg')] bg-contain text-black p-6 rounded-2xl border-4 border-stone-700 shadow-[0_0_20px_rgba(255,255,255,0.7)]">
         <div className="flex justify-center">
           <form className="flex gap-2 text-2xl" onSubmit={handleSubmit}>

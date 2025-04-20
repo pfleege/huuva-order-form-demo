@@ -1,10 +1,15 @@
 import type { Metadata } from "next";
-import { Raleway, Geist, Geist_Mono } from "next/font/google";
+import { Raleway, Geist, Geist_Mono, Playwrite_RO } from "next/font/google";
 import "./globals.css";
+import Navbar from "@/components/Navbar";
 
 const raleway = Raleway({
   variable: "--font-raleway",
   subsets: ["latin"],
+});
+
+const playwrite = Playwrite_RO({
+  variable: "--font-playwrite",
 });
 
 const geistSans = Geist({
@@ -30,8 +35,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${raleway.variable} ${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${raleway.variable} ${geistSans.variable} ${geistMono.variable} ${playwrite.variable} antialiased`}
       >
+        <Navbar />
         {children}
       </body>
     </html>
