@@ -16,7 +16,7 @@ Time spent on building the project: approximately 36-40 hours. Unfortunately a l
 
 ![](./public/databaseStructure.jpg)
 
-Due to time constraints, some compromises were made towards the end - some of components are unnecessarily long and could benefit from splitting them into smaller pieces. The project as a whole contain a handful components that have been given their own pages. You can view then by clicking on the navlinks.
+Due to time constraints, some compromises were made towards the end - some of components are unnecessarily long and could benefit from splitting them into smaller pieces. The project as a whole contain a handful components that have been given their own pages. You can view them by clicking on the navlinks.
 
 ## Initial set up
 
