@@ -1,6 +1,7 @@
 import Searchbar from "@/components/Searchbar";
 import ActiveOrders from "@/components/OrderSearch";
 import NewOrder from "@/components/NewOrder";
+import Dashboard from "@/components/Dashboard";
 
 export default function Home() {
   return (
@@ -10,6 +11,7 @@ export default function Home() {
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Delectus quia
         ducimus illo eum neque voluptas error architecto libero, facere tempore!
       </p>
+      <Dashboard />
       <NewOrder />
       <Searchbar />
       <ActiveOrders />

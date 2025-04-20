@@ -105,3 +105,12 @@ export interface AddOrderProps {
     dishes: DishOrder[]; // Add array of DishOrder objects
   };
 }
+
+export interface DashboardProps {
+  dashboardData?: {
+    brand_name: string;
+    item_name: string;
+    item_qty: number;
+    total_qty: number;
+  };
+}
