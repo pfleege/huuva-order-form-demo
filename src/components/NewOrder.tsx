@@ -91,7 +91,7 @@ const NewOrder = () => {
 
   return (
     <div className="flex">
-      <div className="p-4 mt-4 border rounded bg-gray-50 text-black">
+      <div className="bg-[url('/modalBg.jpg')] bg-contain text-white p-6 rounded-2xl border-4 border-stone-700 shadow-[0_0_20px_rgba(255,255,255,0.7)]">
         <h3 className="font-bold mb-2">Add New Order</h3>
         <form
           onSubmit={async (evt) => {
@@ -179,16 +179,13 @@ const NewOrder = () => {
           <div className="flex flex-col mt-6 mb-3">
             <h3 className="text-3xl py-2">Dish Order</h3>
             {orderData?.dishes?.map((dish, idx) => (
-              <div
-                key={idx}
-                className="flex flex-col mb-4 border p-2 rounded bg-white"
-              >
+              <div key={idx} className="flex flex-col mb-4 border p-2 rounded">
                 <div className="flex mb-2 text-2xl justify-between">
                   <label className="font-semibold pr-2">Kitchen:</label>
                   <select
                     name="brand_name"
                     value={dish.brand_name}
-                    className="border-[1px] w-[285px] px-2 py-1 rounded"
+                    className="border-[1px] w-[285px] px-2 py-1 rounded bg-amber-50 text-black"
                     onChange={(e) => handleDishChange(idx, e)}
                   >
                     <option value=""></option>
@@ -203,7 +200,7 @@ const NewOrder = () => {
                   <select
                     name="item_name"
                     value={dish.item_name}
-                    className="border-[1px] w-[285px] px-2 py-1 rounded"
+                    className="border-[1px] w-[285px] px-2 py-1 rounded bg-amber-50 text-black"
                     onChange={(e) => handleDishChange(idx, e)}
                   >
                     <option value=""></option>
@@ -218,7 +215,7 @@ const NewOrder = () => {
                   <select
                     name="item_qty"
                     value={dish.item_qty}
-                    className="border-[1px] w-[285px] px-2 py-1 rounded"
+                    className="border-[1px] w-[285px] px-2 py-1 rounded bg-amber-50 text-black"
                     onChange={(e) => handleDishChange(idx, e)}
                   >
                     <option value="1">1</option>
@@ -231,7 +228,7 @@ const NewOrder = () => {
                 {orderData.dishes.length > 1 && (
                   <button
                     type="button"
-                    className="text-red-500 underline mt-2"
+                    className="text-red-500 text-2xl underline mt-2 hover:cursor-pointer"
                     onClick={() => removeDishOrder(idx)}
                   >
                     Remove
@@ -241,27 +238,29 @@ const NewOrder = () => {
             ))}
             <button
               type="button"
-              className="bg-green-500 text-white px-4 py-1 rounded mb-4"
+              className="bg-green-500 text-white px-4 py-1 text-2xl rounded-lg mb-10 hover:cursor-pointer"
               onClick={addDishOrder}
             >
-              Add order
+              Add dish
             </button>
           </div>
-          {/* ... submit/cancel buttons ... */}
-          <button
-            type="submit"
-            className="bg-blue-500 text-white px-4 py-1 rounded"
-            disabled={loading}
-          >
-            {loading ? "Sending order..." : "Send order"}
-          </button>
-          <button
-            type="button"
-            className="ml-2 text-gray-500 underline"
-            onClick={() => setOrderData(initialOrderData)}
-          >
-            Cancel
-          </button>
+          <div className="flex justify-between gap-1 text-2xl">
+            {/* ... submit/cancel buttons ... */}
+            <button
+              type="submit"
+              className="bg-blue-500 text-white px-4 py-1 rounded-lg w-[50%] hover:cursor-pointer"
+              disabled={loading}
+            >
+              {loading ? "Sending order..." : "Send order"}
+            </button>
+            <button
+              type="button"
+              className="bg-orange-300 text-white px-4 py-1 rounded-lg w-[50%] hover:cursor-pointer"
+              onClick={() => setOrderData(initialOrderData)}
+            >
+              Cancel
+            </button>
+          </div>
         </form>
       </div>
     </div>

@@ -36,20 +36,20 @@ const Searchbar = () => {
 
   return (
     <div className="bg-black bg-opacity-50 flex justify-center items-center">
-      <div className="bg-white p-6 rounded-lg">
+      <div className="bg-[url('/modalBg.jpg')] bg-contain text-black p-6 rounded-2xl border-4 border-stone-700 shadow-[0_0_20px_rgba(255,255,255,0.7)]">
         <div className="flex justify-center">
           <form className="flex gap-2 text-2xl" onSubmit={handleSubmit}>
             <input
               type="email"
-              placeholder="Search customer by email"
+              placeholder="Search by email"
               value={email}
               onChange={(evt) => setEmail(evt.target.value)}
-              className="w-full p-2 border rounded text-black"
+              className="w-full p-2 border-[1px] border-white rounded text-white"
               required
             />
             <button
               type="submit"
-              className="px-4 pb-1 bg-blue-500 text-white rounded disabled:bg-gray-400"
+              className="px-4 pb-1 bg-blue-500 text-white rounded-xl disabled:bg-gray-400 hover:cursor-pointer"
               disabled={loading}
             >
               {loading ? "Searching..." : "Submit"}
@@ -57,7 +57,7 @@ const Searchbar = () => {
           </form>
         </div>
         {searchResult && (
-          <div className="flex flex-col p-6 text-black items-start w-full">
+          <div className="flex flex-col mt-6 p-6 bg-neutral-600/50 text-white items-start w-full rounded-xl">
             <h3 className="text-xl font-bold">
               Account Name:
               <span className="text-lg mx-2 py-1 px-3 rounded-lg">

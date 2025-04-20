@@ -51,12 +51,12 @@ const ActiveOrders = () => {
 
   return (
     <div className="flex">
-      <div className="bg-white p-6 rounded-lg">
+      <div className="bg-[url('/modalBg.jpg')] bg-contain text-black p-6 rounded-2xl border-4 border-stone-700 shadow-[0_0_20px_rgba(255,255,255,0.7)]">
         <div className="flex justify-center">
           <form className="flex gap-2 text-2xl" onSubmit={handleSubmit}>
             <button
               type="submit"
-              className="px-4 pb-1 bg-blue-500 text-white rounded disabled:bg-gray-400"
+              className="px-4 pt-1.5 pb-2 bg-blue-500 text-white rounded-xl disabled:bg-gray-400 hover:cursor-pointer"
               disabled={loading}
             >
               {loading ? "Searching..." : "Display Orders"}
@@ -64,12 +64,12 @@ const ActiveOrders = () => {
           </form>
         </div>
         {searchResult.length > 0 && (
-          <div className="flex flex-col p-6 text-black items-start w-full">
+          <div className="flex flex-col mt-6 p-6 bg-neutral-600/50 text-white items-start w-full rounded-xl text-start text-2xl">
             {searchResult.map((order, idx) => (
               <div
                 onClick={() => handleClick(order)}
                 key={order?.order_id || idx}
-                className="mb-4 border-b pb-2 cursor-pointer hover:bg-gray-100"
+                className="mb-4 border-b p-2 pb-4 rounded-xl cursor-pointer hover:bg-gray-100 hover:text-black w-full"
               >
                 <p>
                   <strong>Account Name:</strong> {order?.account_name}
@@ -87,8 +87,8 @@ const ActiveOrders = () => {
         )}
       </div>
       {selectedOrder && editOrderVisible && (
-        <div className="p-4 mt-4 border rounded bg-gray-50 text-black">
-          <h3 className="font-bold mb-2">Edit Order</h3>
+        <div className="h-[200px] bg-[url('/modalBg.jpg')] bg-contain text-white p-6 rounded-2xl border-4 border-stone-700 shadow-[0_0_20px_rgba(255,255,255,0.7)]">
+          <h3 className="font-bold mb-2">Edit Order Status</h3>
           <form
             onSubmit={async (evt) => {
               evt.preventDefault();
@@ -117,11 +117,10 @@ const ActiveOrders = () => {
             }}
           >
             <div className="mb-2">
-              <label className="block font-semibold">Order Status:</label>
               <select
                 name="order_status_id"
                 value={selectedOrder.order_status_id}
-                className="border-[1px] w-[285px] px-2 py-1 rounded"
+                className="border-[1px] w-[285px] px-2 py-1 rounded bg-amber-50 text-black text-2xl"
                 onChange={(e) => handleStatusChange(e)}
               >
                 <option value="1">order pending</option>
@@ -140,20 +139,21 @@ const ActiveOrders = () => {
                 }
               /> */}
             </div>
-            {/* Insert other relevant order fields */}
-            <button
-              type="submit"
-              className="bg-blue-500 text-white px-4 py-1 rounded"
-            >
-              Save Changes
-            </button>
-            <button
-              type="button"
-              className="ml-2 text-gray-500 underline"
-              onClick={() => setSelectedOrder(null)}
-            >
-              Cancel
-            </button>
+            <div className="flex justify-between gap-1 text-2xl">
+              <button
+                type="submit"
+                className="bg-blue-500 text-white px-4 py-1 rounded-lg w-[50%] hover:cursor-pointer"
+              >
+                Save
+              </button>
+              <button
+                type="button"
+                className="bg-orange-300 text-white px-4 py-1 rounded-lg w-[50%] hover:cursor-pointer"
+                onClick={() => setSelectedOrder(null)}
+              >
+                Cancel
+              </button>
+            </div>
           </form>
         </div>
       )}
