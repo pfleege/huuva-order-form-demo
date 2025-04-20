@@ -20,7 +20,7 @@ const ActiveOrders = () => {
       const response = await fetch(`/api/orders`);
       const orderData = await response.json();
       if (orderData && Array.isArray(orderData)) {
-        console.log(orderData);
+        // console.log(orderData);
         setSearchResult(orderData);
       } else {
         setSearchResult([]);
@@ -36,7 +36,7 @@ const ActiveOrders = () => {
   const handleClick = (order: OrderFormProps["orderData"]) => {
     setSelectedOrder(order);
     setEditOrderVisible(true);
-    console.log("Selected order:", order);
+    // console.log("Selected order:", order);
   };
 
   // Handle changes for dish fields
@@ -128,16 +128,6 @@ const ActiveOrders = () => {
                 <option value="3">order ready for delivery</option>
                 <option value="4">order delivered</option>
               </select>
-              {/* <input
-                className="border px-2 py-1 rounded"
-                value={selectedOrder.order_status_id}
-                onChange={(evt) =>
-                  setSelectedOrder({
-                    ...selectedOrder,
-                    order_status_id: parseInt(evt.target.value, 10),
-                  })
-                }
-              /> */}
             </div>
             <div className="flex justify-between gap-1 text-2xl">
               <button

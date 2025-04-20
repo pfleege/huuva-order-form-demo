@@ -4,17 +4,19 @@ import { useEffect, useState } from "react";
 import { DashboardProps } from "@/app/lib/definitions";
 
 const Dashboard = () => {
+  const [isLoading, setIsLoading] = useState(false);
   const [searchResult, setSearchResult] = useState<
     DashboardProps["dashboardData"][]
   >([]);
 
   useEffect(() => {
     async function fetchOrders() {
+      setIsLoading(true);
       try {
         const response = await fetch(`/api/dashboard-data`);
         const dashboardData = await response.json();
         if (dashboardData && Array.isArray(dashboardData)) {
-          console.log(dashboardData);
+          // console.log(dashboardData);
           setSearchResult(dashboardData);
         } else {
           setSearchResult([]);
@@ -22,6 +24,8 @@ const Dashboard = () => {
       } catch (error) {
         console.error("Search failed:", error);
         setSearchResult([]);
+      } finally {
+        setIsLoading(false);
       }
     }
     fetchOrders();
@@ -31,7 +35,35 @@ const Dashboard = () => {
     <div className="flex justify-center my-20">
       <div className="bg-[url('/modalBg.jpg')] bg-contain text-black p-6 rounded-2xl border-4 border-stone-700 shadow-[0_0_20px_rgba(255,255,255,0.7)]">
         <div className="flex justify-center">
-          {searchResult.length > 0 ? (
+          {isLoading ? (
+            <div className="flex flex-col p-6">
+              <h3 className="font-bold text-white mb-2">Order Statistics</h3>
+              <table className="min-w-full border-collapse border border-gray-200 text-lg bg-gray-100/50">
+                <thead>
+                  <tr className="bg-gray-100">
+                    <th className="border border-gray-200 px-4 py-2">Brand</th>
+                    <th className="border border-gray-200 px-4 py-2">Item</th>
+                    <th className="border border-gray-200 px-4 py-2">
+                      Order Quantity
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr className="hover:bg-gray-50">
+                    <td className="border border-gray-200 px-4 py-2 text-sm">
+                      Loading...
+                    </td>
+                    <td className="border border-gray-200 px-4 py-2 text-sm">
+                      Loading...
+                    </td>
+                    <td className="border border-gray-200 px-4 py-2 text-sm">
+                      Loading...
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          ) : searchResult.length > 0 ? (
             <div className="flex flex-col p-6">
               <h3 className="font-bold text-white mb-2">Order Statistics</h3>
               <table className="min-w-full border-collapse border border-gray-200 text-lg bg-gray-100/50">

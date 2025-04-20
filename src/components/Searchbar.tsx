@@ -20,9 +20,9 @@ const Searchbar = () => {
       const userData = await response.json();
 
       if (userData) {
-        console.log(userData);
+        // console.log(userData);
         setSearchResult(userData);
-        console.log(searchResult);
+        // console.log(searchResult);
       } else {
         setSearchResult(undefined);
         console.log("Account not found.");

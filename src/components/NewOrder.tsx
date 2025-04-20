@@ -34,16 +34,6 @@ const NewOrder = () => {
     }));
   };
 
-  //   const handleDropDown = (
-  //     evt: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  //   ) => {
-  //     const { name, value } = evt.target;
-  //     setOrderData((prev) => ({
-  //       ...prev!,
-  //       [name]: value || "",
-  //     }));
-  //   };
-
   // Handle changes for dish fields
   const handleDishChange = (
     idx: number,
@@ -97,7 +87,7 @@ const NewOrder = () => {
           onSubmit={async (evt) => {
             evt.preventDefault();
             setLoading(true);
-            console.log("Submitting order data:", JSON.stringify(orderData));
+            // console.log("Submitting order data:", JSON.stringify(orderData));
             try {
               const response = await fetch("/api/add-order", {
                 method: "POST",

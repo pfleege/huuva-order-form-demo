@@ -20,7 +20,7 @@ export async function GET() {
       `;
 
     // Verify via console.log that result is logged as an array
-    console.log("Dashboard data:", result);
+    // console.log("Dashboard data:", result);
     return NextResponse.json(result || []);
   } catch (error) {
     console.log(`Error: ${error}`);

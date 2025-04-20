@@ -28,7 +28,7 @@ export async function GET() {
        
       WHERE osth.order_status_id <> 4`;
     // Verify via console.log that result is logged as an array
-    console.log("API orders:", result);
+    // console.log("API orders:", result);
     return NextResponse.json(result || []);
   } catch (error) {
     console.log(`Error: ${error}`);

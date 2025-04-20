@@ -13,7 +13,7 @@ export async function POST(req: Request) {
       dishes,
     } = await req.json();
 
-    console.log(`Received ${dishes.length} dishes in order`);
+    // console.log(`Received ${dishes.length} dishes in order`);
 
     const sql = neon(process.env.DATABASE_URL!);
 
