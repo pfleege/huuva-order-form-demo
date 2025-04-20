@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Raleway, Geist, Geist_Mono, Playwrite_RO } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
+import Footnote from "@/components/Footnote";
 
 const raleway = Raleway({
   variable: "--font-raleway",
@@ -39,6 +40,7 @@ export default function RootLayout({
       >
         <Navbar />
         {children}
+        <Footnote />
       </body>
     </html>
   );
