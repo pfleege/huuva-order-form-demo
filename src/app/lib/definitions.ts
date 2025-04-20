@@ -83,6 +83,7 @@ export interface OrderFormProps {
     order_status_id: number;
     order_status: string;
     status_update: string;
+    order_items: DishOrder[];
   };
 }
 
@@ -90,6 +91,7 @@ export interface DishOrder {
   brand_name: string;
   item_name: string;
   item_qty: number;
+  order_status: string;
 }
 
 export interface AddOrderProps {

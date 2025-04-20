@@ -82,6 +82,25 @@ const Searchbar = () => {
                 {searchResult.status_update}
               </span>
             </h3>
+            <div className="flex flex-col border-2 border-gray-300 rounded-lg p-4 my-4 w-full">
+              {searchResult.order_items.map((item, index) => (
+                <div key={index} className="flex gap-2 mb-4">
+                  <h3 className="pl-4 text-lg font-bold">
+                    Dish: {item.brand_name} - {item.item_name}, ({item.item_qty}{" "}
+                    ordered)
+                    <p className="text-sm pl-2 pb-1 text-start">
+                      Dish status: {item.order_status}
+                    </p>
+                  </h3>
+                </div>
+              ))}
+            </div>
+            <h3 className="text-xl font-bold">
+              Order Status Update:
+              <span className="text-lg mx-2 py-1 px-3 rounded-lg">
+                {searchResult.status_update}
+              </span>
+            </h3>
           </div>
         )}
       </div>
