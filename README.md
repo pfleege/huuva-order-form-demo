@@ -1,36 +1,56 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Order Form Demo - Next.js/React/TypeScript/Tailwind
 
-## Getting Started
+![](./public/orderStart.jpg)
 
-First, run the development server:
+<p align="center">
+  Order Form Demo by <a href="https://iceeqsolutions.fi/" target="_blank">iCeeqSolutions</a>
+</p>
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## About
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The Order Form demo is a brief introductory project on how to connect a PostgreSQL database to a Next.js based project.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+To test out the demo, you can thus either use the link below, or download the project and connect it to your own relational database. Note that the SQL syntax might differ slightly from the one used in the Neon database, so change the queries according to the required syntax.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Time spent on building the project: approximately 36-40 hours. Unfortunately a lot of extra time was spent on re-building the database structure, as the original structure proved impractical in the end.
 
-## Learn More
+![](./public/databaseStructure.jpg)
 
-To learn more about Next.js, take a look at the following resources:
+Due to time constraints, some compromises were made towards the end - some of components are unnecessarily long and could benefit from splitting them into smaller pieces. The project as a whole contain a handful components that have been given their own pages. You can view then by clicking on the navlinks.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Initial set up
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+In order to load the available demo data, you need to type "localhost:3000/api/load-data" in your browser and hit enter:
 
-## Deploy on Vercel
+![](./public/loadData.jpg)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Page structure
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The Dashboard page currently contain only a simple table that displays the amount of ordered dishes in descending order. This can naturally be expanded to include more insightful information about the orders.
+
+In the Order by Account page, you can search all orders for a specific customer - you can e.g. test this out by using the "account.1@demo.com" from the available demo data.
+
+The View Orders page displays all current orders that have any other order status than "order delivered". Simply click the "Display Orders" -button to view the active orders. After that, you can click on any of the active orders in order to change its status.
+
+Via the final nav link, Add Order, you can add new orders with multiple kitchen/dish combinations (where Kitchen = brand and Dish = item).
+
+![](./public/orderPage.png)
+
+## Demo
+
+👁️ [Live Demo](https://huuva-order-form-demo.vercel.app/)
+
+## Built with
+
+- Next.js
+- TypeScript
+- React
+- Tailwind
+- PostgreSQL - Neon
+- Prettier
+- ESLint
+
+<br/><br/>
+
+<p align="center"><a href="https://iceeqsolutions.fi/" target="_blank"><img height="61px" width="300px" src="./public/iCS_Logo_Light.png"></a></p>
+<br/><br/>
