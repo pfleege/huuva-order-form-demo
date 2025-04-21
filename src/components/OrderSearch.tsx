@@ -2,10 +2,15 @@
 
 import { useState } from "react";
 import { OrderFormProps } from "@/app/lib/definitions";
+// import OrderDetails from "./OrderDetails";
 
 const ActiveOrders = () => {
   const [loading, setLoading] = useState(false);
   const [editOrderVisible, setEditOrderVisible] = useState(false);
+  const [orderDetailsVisible, setOrderDetailsVisible] = useState(false);
+  const [orderDetails, setOrderDetails] = useState<
+    OrderFormProps["orderData"][]
+  >([]);
   const [searchResult, setSearchResult] = useState<
     OrderFormProps["orderData"][]
   >([]);
@@ -49,6 +54,12 @@ const ActiveOrders = () => {
     });
   };
 
+  const handleViewOrderDetails = (order: OrderFormProps["orderData"]) => {
+    setOrderDetails([order]);
+    setOrderDetailsVisible(true);
+    // console.log("Selected order:", order);
+  };
+
   return (
     <div className="flex justify-center my-20">
       <div className="bg-[url('/modalBg.jpg')] bg-contain text-black p-6 rounded-2xl border-4 border-stone-700 shadow-[0_0_20px_rgba(255,255,255,0.7)]">
@@ -68,7 +79,8 @@ const ActiveOrders = () => {
             {searchResult.map((order, idx) => (
               <div
                 onClick={() => handleClick(order)}
-                key={order?.order_id || idx}
+                // key={order?.order_id || idx}
+                key={`${order?.order_id ?? "order"}-${idx}`}
                 className="mb-4 border-b p-2 pb-4 rounded-xl cursor-pointer hover:bg-gray-100 hover:text-black w-full"
               >
                 <p>
@@ -81,13 +93,23 @@ const ActiveOrders = () => {
                 <p>
                   <strong>Order Status:</strong> {order?.order_status}
                 </p>
+                {/* <div>
+                  Items:
+                  {order?.order_items &&
+                    order.order_items.map((item, itemIdx) => (
+                      <div key={item?.order_items_id ?? `item-${itemIdx}`}>
+                        {item.brand_name} - {item.item_name} x {item.item_qty} (
+                        {item.order_status})
+                      </div>
+                    ))}
+                </div> */}
               </div>
             ))}
           </div>
         )}
       </div>
       {selectedOrder && editOrderVisible && (
-        <div className="h-[200px] bg-[url('/modalBg.jpg')] bg-contain text-white p-6 rounded-2xl border-4 border-stone-700 shadow-[0_0_20px_rgba(255,255,255,0.7)]">
+        <div className="h-[250px] bg-[url('/modalBg.jpg')] bg-contain text-white p-6 rounded-2xl border-4 border-stone-700 shadow-[0_0_20px_rgba(255,255,255,0.7)]">
           <h3 className="font-bold mb-2">Edit Order Status</h3>
           <form
             onSubmit={async (evt) => {
@@ -144,7 +166,36 @@ const ActiveOrders = () => {
                 Cancel
               </button>
             </div>
+            <button
+              type="button"
+              className="bg-green-500 w-full mt-2 text-white px-4 py-1 text-2xl rounded-lg mb-10 hover:cursor-pointer"
+              onClick={() => handleViewOrderDetails(selectedOrder!)}
+            >
+              View Order Details
+            </button>
           </form>
+        </div>
+      )}
+      {orderDetailsVisible && orderDetails && (
+        <div className="flex flex-col mt-6 p-6 bg-neutral-600/50 text-white items-start w-full rounded-xl text-start text-2xl">
+          {orderDetails.map((order, idx) => (
+            <div
+              onClick={() => handleClick(order)}
+              key={order?.order_id || idx}
+              className="mb-4 border-b p-2 pb-4 rounded-xl cursor-pointer hover:bg-gray-100 hover:text-black w-full"
+            >
+              <p>
+                <strong>Account Name:</strong> {order?.account_name}
+              </p>
+              {/* <p>
+                <strong>Order Created:</strong> {order?.order_created}
+              </p>
+
+              <p>
+                <strong>Order Status:</strong> {order?.order_status}
+              </p> */}
+            </div>
+          ))}
         </div>
       )}
     </div>

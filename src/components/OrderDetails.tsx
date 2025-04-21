@@ -23,7 +23,7 @@ const initialOrderData = {
   ],
 };
 
-const NewOrder = () => {
+const OrderDetails = () => {
   const [loading, setLoading] = useState(false);
   const [orderData, setOrderData] =
     useState<AddOrderProps["orderData"]>(initialOrderData);
@@ -95,16 +95,15 @@ const NewOrder = () => {
             setLoading(true);
             // console.log("Submitting order data:", JSON.stringify(orderData));
             try {
-              const response = await fetch("/api/add-order", {
-                method: "POST",
+              const response = await fetch("/api/order-details", {
+                method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(orderData),
               });
-              if (!response.ok)
-                throw new Error("Failed to update order status");
-              alert("Order status has been updated!");
+              if (!response.ok) throw new Error("Failed to update order");
+              alert("Order has been updated!");
             } catch (error) {
-              alert("There was an error updating the order status.");
+              alert("There was an error updating the order.");
               console.error(error);
             }
             setLoading(false);
@@ -263,4 +262,4 @@ const NewOrder = () => {
   );
 };
 
-export default NewOrder;
+export default OrderDetails;
