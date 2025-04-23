@@ -75,6 +75,10 @@ export interface OrderFormProps {
     account_name: string;
     account_phone: string;
     address_id: number;
+    city: string;
+    street: string;
+    postal_code: string;
+    brand_id: number;
     order_channel_id: number;
     order_created: string;
     order_id: number;
@@ -93,6 +97,7 @@ export interface DishOrder {
   item_id: number;
   item_name: string;
   item_qty: number;
+  order_item_status_id: number;
   order_status: string;
 }
 
@@ -118,16 +123,21 @@ export interface DashboardProps {
   };
 }
 
+// export interface OrderDetailsProps {
+//   orderDetails: {
+//     account_email: string;
+//     account_id: number;
+//     account_name: string;
+//     account_phone: string;
+//     address_id: number;
+//     brand_id: number;
+//     order_channel_id: number;
+//     order_created: string;
+//     order_items: DishOrder[];
+//   }[];
+// }
+
 export interface OrderDetailsProps {
-  orderDetails: {
-    account_email: string;
-    account_id: number;
-    account_name: string;
-    account_phone: string;
-    address_id: number;
-    brand_id: number;
-    order_channel_id: number;
-    order_created: string;
-    order_items: DishOrder[];
-  }[];
+  orderDetails?: OrderFormProps["orderData"];
+  // orderDetails?: OrderFormProps["orderData"][];
 }

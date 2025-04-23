@@ -12,53 +12,68 @@ export async function GET() {
     const result = await sql`
 
       SELECT
-        ord.order_id,		
+        actv.history_id,
+        actv.order_id,
+        actv.order_status_id,
+        actv.status_update,
+        actv.order_created,
+        actv.order_channel_id,
+        actv.account_id,
+        actv.address_id,
+        actv.pickup_time,
         acc.account_name,
         acc.account_email,
         acc.account_phone,
         addr.city,
         addr.street,
         addr.postal_code,
-        TO_CHAR(ord.order_created, 'DD-MM-YYYY at HH24:MI') AS order_created,
         ost.order_status,
-        oshi.order_status_id,
-        TO_CHAR(ost.status_update, 'DD-MM-YYYY at HH24:MI') AS status_update,
         json_agg(
           json_build_object(
-            'order_items_id', orit.order_items_id,
-            'brand_id', br.brand_id,
-            'brand_name', br.brand_name,
-            'item_id', itm.item_id,
-            'item_name', itm.item_name,
-            'item_qty', orit.item_qty,
-            'order_status', os_item.order_status
+          'order_items_id', orit.order_items_id,
+          'brand_id', br.brand_id,
+          'brand_name', br.brand_name,
+          'item_id', itm.item_id,
+          'item_name', itm.item_name,
+          'item_qty', orit.item_qty,
+          'order_item_status_id', orit.order_item_status_id,
+          'order_status', osit.order_status
           )
         ) AS order_items
-      FROM 
-        accounts acc
-        INNER JOIN orders ord ON acc.account_id = ord.account_id 
-        INNER JOIN order_status_history oshi ON ord.order_id = oshi.order_id
-        INNER JOIN (
-          SELECT DISTINCT ON (order_id) *
-          FROM order_status_history
-          INNER JOIN order_status os ON order_status_history.order_status_id = os.order_status_id
-          ORDER BY order_id, status_update DESC
-        ) AS ost ON ord.order_id = ost.order_id
-        INNER JOIN delivery_addresses addr ON ord.address_id = addr.address_id 
-        INNER JOIN order_items orit ON orit.order_id = ord.order_id
-        INNER JOIN order_status os_item ON orit.order_item_status_id = os_item.order_status_id
-        INNER JOIN items itm ON itm.item_id = orit.item_id
-        INNER JOIN brands br ON br.brand_id = orit.brand_id
-      WHERE 
-        ord.order_id IN (SELECT orders.order_id FROM orders INNER JOIN order_status_history ON order_status_history.order_id = orders.order_id
-        WHERE order_status_history.order_status_id <> 4)
-      GROUP BY
-        ord.order_id, acc.account_name, acc.account_email, acc.account_phone, addr.city, addr.street, addr.postal_code, ord.order_created, ost.order_status, oshi.order_status_id, ost.status_update
 
-        `;
+      FROM
+        active_orders actv 
+        INNER JOIN accounts acc ON actv.account_id = acc.account_id
+        INNER JOIN delivery_addresses addr ON actv.address_id = addr.address_id
+        INNER JOIN order_status ost ON ost.order_status_id = actv.order_status_id
+        INNER JOIN order_items orit ON actv.order_id = orit.order_id
+        INNER JOIN brands br on br.brand_id = orit.brand_id
+        INNER JOIN items itm ON itm.item_id = orit.item_id
+        INNER JOIN order_status osit ON orit.order_item_status_id = osit.order_status_id
+
+      GROUP BY
+        actv.history_id,
+        actv.order_id,
+        actv.order_status_id,
+        actv.status_update,
+        actv.order_created,
+        actv.order_channel_id,
+        actv.account_id,
+        actv.address_id,
+        actv.pickup_time,
+        acc.account_name,
+        acc.account_email,
+        acc.account_phone,
+        addr.city,
+        addr.street,
+        addr.postal_code,
+        ost.order_status
+      ;
+
+      `;
 
     // Verify via console.log that result is logged as an array
-    console.log("API orders:", result);
+    // console.log("API orders:", result);
     return NextResponse.json(result || []);
   } catch (error) {
     console.log(`Error: ${error}`);

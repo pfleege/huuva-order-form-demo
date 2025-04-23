@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { OrderFormProps } from "@/app/lib/definitions";
 import { AddOrderProps } from "@/app/lib/definitions";
 
 const initialOrderData = {
@@ -18,15 +19,47 @@ const initialOrderData = {
       item_name: "",
       item_id: 0,
       item_qty: 1,
+      order_item_status_id: 0,
       order_status: "order pending",
     },
   ],
 };
 
-const OrderDetails = () => {
+const OrderDetails = ({ orderData }: OrderFormProps) => {
   const [loading, setLoading] = useState(false);
-  const [orderData, setOrderData] =
+  const [orderInfo, setOrderData] =
     useState<AddOrderProps["orderData"]>(initialOrderData);
+
+  //
+
+  useEffect(() => {
+    if (orderData) {
+      // Pre-fill the form with orderData
+      setOrderData({
+        account_name: orderData.account_name || "",
+        account_email: orderData.account_email || "",
+        account_phone: orderData.account_phone || "",
+        city: "",
+        street: "",
+        postal_code: "",
+        dishes:
+          orderData.order_items.map((item) => ({
+            brand_id: item.brand_id,
+            order_items_id: item.order_items_id,
+            brand_name: item.brand_name,
+            item_name: item.item_name,
+            item_id: item.item_id,
+            item_qty: item.item_qty,
+            order_item_status_id: item.order_item_status_id,
+            order_status: item.order_status,
+          })) ?? [],
+        // })) as AddOrderProps["orderData"]["dishes"] || [],
+      });
+    } else {
+      // Use initialOrderData for a new order
+      setOrderData(initialOrderData);
+    }
+  }, [orderData]);
 
   // Generic handler for all input fields
   const handleChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
@@ -36,7 +69,6 @@ const OrderDetails = () => {
       [name]: value || "",
     }));
   };
-
   // Handle changes for dish fields
   const handleDishChange = (
     idx: number,
@@ -68,6 +100,7 @@ const OrderDetails = () => {
           item_id: 0,
           item_name: "",
           item_qty: 1,
+          order_item_status_id: 0,
           order_status: "order pending",
         },
       ],
@@ -85,6 +118,7 @@ const OrderDetails = () => {
     });
   };
 
+  //
   return (
     <div className="flex justify-center my-20">
       <div className="bg-[url('/modalBg.jpg')] bg-contain text-white p-6 rounded-2xl border-4 border-stone-700 shadow-[0_0_20px_rgba(255,255,255,0.7)]">
@@ -98,7 +132,7 @@ const OrderDetails = () => {
               const response = await fetch("/api/order-details", {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(orderData),
+                body: JSON.stringify(orderInfo),
               });
               if (!response.ok) throw new Error("Failed to update order");
               alert("Order has been updated!");
@@ -115,7 +149,7 @@ const OrderDetails = () => {
             <input
               className="border px-2 rounded"
               name="account_name"
-              value={orderData?.account_name || ""}
+              value={orderInfo?.account_name || ""}
               onChange={handleChange}
             />
           </div>
@@ -124,7 +158,7 @@ const OrderDetails = () => {
             <input
               className="border px-2 py-1 rounded"
               name="account_email"
-              value={orderData?.account_email || ""}
+              value={orderInfo?.account_email || ""}
               onChange={handleChange}
             />
           </div>
@@ -133,11 +167,10 @@ const OrderDetails = () => {
             <input
               className="border px-2 py-1 rounded"
               name="account_phone"
-              value={orderData?.account_phone || ""}
+              value={orderInfo?.account_phone || ""}
               onChange={handleChange}
             />
           </div>
-
           <div className="flex flex-col mt-6 mb-3">
             <h3 className="text-3xl py-2">Delivery Address</h3>
             <div className="flex flex-col mb-2 text-2xl">
@@ -146,7 +179,7 @@ const OrderDetails = () => {
                 <input
                   className="border px-2 py-1 rounded"
                   name="city"
-                  value={orderData?.city || ""}
+                  value={orderInfo?.city || ""}
                   onChange={handleChange}
                 />
               </div>
@@ -155,7 +188,7 @@ const OrderDetails = () => {
                 <input
                   className="border px-2 py-1 rounded"
                   name="street"
-                  value={orderData?.street || ""}
+                  value={orderInfo?.street || ""}
                   onChange={handleChange}
                 />
               </div>
@@ -164,16 +197,15 @@ const OrderDetails = () => {
                 <input
                   className="border px-2 py-1 rounded"
                   name="postal_code"
-                  value={orderData?.postal_code || ""}
+                  value={orderInfo?.postal_code || ""}
                   onChange={handleChange}
                 />
               </div>
             </div>
           </div>
-
           <div className="flex flex-col mt-6 mb-3">
             <h3 className="text-3xl py-2">Dish Order</h3>
-            {orderData?.dishes?.map((dish, idx) => (
+            {orderInfo?.dishes?.map((dish, idx) => (
               <div key={idx} className="flex flex-col mb-4 border p-2 rounded">
                 <div className="flex mb-2 text-2xl justify-between">
                   <label className="font-semibold pr-2">Kitchen:</label>
@@ -206,56 +238,52 @@ const OrderDetails = () => {
                   </select>
                 </div>
                 <div className="flex mb-2 text-2xl justify-between">
+                  <label className="font-semibold pr-2">Dish:</label>
+                  <select
+                    name="order_status_id"
+                    value={dish.order_status}
+                    className="border-[1px] w-[285px] px-2 py-1 rounded bg-amber-50 text-black text-2xl"
+                    onChange={(e) => handleDishChange(idx, e)}
+                  >
+                    <option value="1">order pending</option>
+                    <option value="2">order in progress</option>
+                    <option value="3">order ready for delivery</option>
+                    <option value="4">order delivered</option>
+                  </select>
+                </div>
+                <div className="flex mb-2 text-2xl justify-between">
                   <label className="font-semibold pr-2">Quantity:</label>
                   <select
                     name="item_qty"
                     value={dish.item_qty}
                     className="border-[1px] w-[285px] px-2 py-1 rounded bg-amber-50 text-black"
                     onChange={(e) => handleDishChange(idx, e)}
-                  >
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                  </select>
+                  ></select>
                 </div>
-                {orderData.dishes.length > 1 && (
-                  <button
-                    type="button"
-                    className="text-red-500 text-2xl underline mt-2 hover:cursor-pointer"
-                    onClick={() => removeDishOrder(idx)}
-                  >
-                    Remove
-                  </button>
-                )}
+                <button
+                  type="button"
+                  onClick={() => removeDishOrder(idx)}
+                  className="bg-red-500 text-white px-4 py-1 rounded-lg"
+                >
+                  Remove Dish
+                </button>
               </div>
             ))}
             <button
               type="button"
-              className="bg-green-500 text-white px-4 py-1 text-2xl rounded-lg mb-10 hover:cursor-pointer"
               onClick={addDishOrder}
+              className="bg-green-500 text-white px-4 py-1 rounded-lg"
             >
-              Add dish
+              Add Dish Order
             </button>
           </div>
-          <div className="flex justify-between gap-1 text-2xl">
-            {/* ... submit/cancel buttons ... */}
-            <button
-              type="submit"
-              className="bg-blue-500 text-white px-4 py-1 rounded-lg w-[50%] hover:cursor-pointer"
-              disabled={loading}
-            >
-              {loading ? "Sending order..." : "Send order"}
-            </button>
-            <button
-              type="button"
-              className="bg-orange-300 text-white px-4 py-1 rounded-lg w-[50%] hover:cursor-pointer"
-              onClick={() => setOrderData(initialOrderData)}
-            >
-              Cancel
-            </button>
-          </div>
+          <button
+            type="submit"
+            className="bg-blue-500 text-white px-4 py-2 rounded-lg disabled:bg-gray-400 hover:cursor-pointer"
+            disabled={loading}
+          >
+            {loading ? "Updating..." : "Update Order"}
+          </button>
         </form>
       </div>
     </div>

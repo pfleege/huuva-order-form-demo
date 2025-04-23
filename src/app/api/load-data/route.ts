@@ -119,6 +119,25 @@ async function loadTables() {
       );
     `);
 
+  // Add view necessary for querying items and order status at a later stage
+  await client.query(`
+      CREATE VIEW active_orders AS
+      SELECT DISTINCT ON (osth.order_id)
+        osth.history_id,
+        osth.order_id,
+        osth.order_status_id,
+        osth.status_update,
+        ord.order_created,
+        ord.order_channel_id,
+        ord.account_id,
+        ord.address_id,
+        ord.pickup_time
+      FROM order_status_history osth 
+      INNER JOIN orders ord ON osth.order_id = ord.order_id
+      WHERE osth.order_status_id <> 4
+      ORDER BY osth.order_id, osth.status_update DESC;
+    `);
+
   /* 
   Uncomment to insert demo data from /app/lib/demoData.ts
   */
