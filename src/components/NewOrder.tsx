@@ -309,9 +309,9 @@ const NewOrder = ({ orderData }: OrderFormProps) => {
         account_name: orderData.account_name || "",
         account_email: orderData.account_email || "",
         account_phone: orderData.account_phone || "",
-        city: "",
-        street: "",
-        postal_code: "",
+        city: orderData.city || "",
+        street: orderData.street || "",
+        postal_code: orderData.postal_code || "",
         dishes:
           orderData.order_items.map((item) => ({
             brand_id: item.brand_id,
@@ -372,7 +372,7 @@ const NewOrder = ({ orderData }: OrderFormProps) => {
           item_id: 0,
           item_name: "",
           item_qty: 1,
-          order_item_status_id: 0,
+          order_item_status_id: 1,
           order_status: "order pending",
         },
       ],
@@ -393,24 +393,30 @@ const NewOrder = ({ orderData }: OrderFormProps) => {
   return (
     <div className="flex justify-center my-20">
       <div className="bg-[url('/modalBg.jpg')] bg-contain text-white p-6 rounded-2xl border-4 border-stone-700 shadow-[0_0_20px_rgba(255,255,255,0.7)]">
-        <h3 className="font-bold mb-2">Add New Order</h3>
+        {orderInfo?.dishes[0]?.order_items_id === 0 ? (
+          <h3 className="font-bold mb-2">Add New Order</h3>
+        ) : (
+          <h3 className="font-bold mb-2">Edit Order</h3>
+        )}
+        {/* <h3 className="font-bold mb-2">Add New Order</h3> */}
         <form
           onSubmit={async (evt) => {
             evt.preventDefault();
             setLoading(true);
             // console.log("Submitting order data:", JSON.stringify(orderData));
-            try {
-              const response = await fetch("/api/order-details", {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(orderInfo),
-              });
-              if (!response.ok) throw new Error("Failed to update order");
-              alert("Order has been updated!");
-            } catch (error) {
-              alert("There was an error updating the order.");
-              console.error(error);
-            }
+            // try {
+            //   const response = await fetch("/api/order-details", {
+            //     method: "PUT",
+            //     headers: { "Content-Type": "application/json" },
+            //     body: JSON.stringify(orderInfo),
+            //   });
+            //   if (!response.ok) throw new Error("Failed to update order");
+            //   alert("Order has been updated!");
+            // } catch (error) {
+            //   alert("There was an error updating the order.");
+            //   console.error(error);
+            // }
+            console.log("Submitting order data:", JSON.stringify(orderInfo));
             setLoading(false);
             setOrderData(initialOrderData);
           }}
@@ -483,31 +489,31 @@ const NewOrder = ({ orderData }: OrderFormProps) => {
                 <div className="flex mb-2 text-2xl justify-between">
                   <label className="font-semibold pr-2">Kitchen:</label>
                   <select
-                    name="brand_name"
-                    value={dish.brand_name}
+                    name="brand_id"
+                    value={dish.brand_id}
                     className="border-[1px] w-[285px] px-2 py-1 rounded bg-amber-50 text-black"
                     onChange={(e) => handleDishChange(idx, e)}
                   >
                     <option value=""></option>
-                    <option value="Brand_1">Brand_1</option>
-                    <option value="Brand_2">Brand_2</option>
-                    <option value="Brand_3">Brand_3</option>
-                    <option value="Brand_4">Brand_4</option>
+                    <option value="1">Brand_1</option>
+                    <option value="2">Brand_2</option>
+                    <option value="3">Brand_3</option>
+                    <option value="4">Brand_4</option>
                   </select>
                 </div>
                 <div className="flex mb-2 text-2xl justify-between">
                   <label className="font-semibold pr-2">Dish:</label>
                   <select
-                    name="item_name"
-                    value={dish.item_name}
+                    name="item_id"
+                    value={dish.item_id}
                     className="border-[1px] w-[285px] px-2 py-1 rounded bg-amber-50 text-black"
                     onChange={(e) => handleDishChange(idx, e)}
                   >
                     <option value=""></option>
-                    <option value="Item_1">Item_1</option>
-                    <option value="Item_2">Item_2</option>
-                    <option value="Item_3">Item_3</option>
-                    <option value="Item_4">Item_4</option>
+                    <option value="1">Item_1</option>
+                    <option value="2">Item_2</option>
+                    <option value="3">Item_3</option>
+                    <option value="4">Item_4</option>
                   </select>
                 </div>
                 <div className="flex mb-2 text-2xl justify-between">
@@ -523,6 +529,20 @@ const NewOrder = ({ orderData }: OrderFormProps) => {
                     <option value="3">3</option>
                     <option value="4">4</option>
                     <option value="5">5</option>
+                  </select>
+                </div>
+                <div className="flex mb-2 text-2xl justify-between">
+                  <label className="font-semibold pr-2">Order Status:</label>
+                  <select
+                    name="order_item_status_id"
+                    value={dish.order_item_status_id}
+                    className="border-[1px] w-[285px] px-2 py-1 rounded bg-amber-50 text-black"
+                    onChange={(e) => handleDishChange(idx, e)}
+                  >
+                    <option value="1">Pending</option>
+                    <option value="2">In progress</option>
+                    <option value="3">Ready for delivery</option>
+                    <option value="4">Delivered</option>
                   </select>
                 </div>
                 {orderInfo.dishes.length > 1 && (
@@ -551,7 +571,13 @@ const NewOrder = ({ orderData }: OrderFormProps) => {
               className="bg-blue-500 text-white px-4 py-1 rounded-lg w-[50%] hover:cursor-pointer"
               disabled={loading}
             >
-              {loading ? "Sending order..." : "Send order"}
+              {orderInfo?.dishes[0]?.order_items_id === 0
+                ? loading
+                  ? "Sending order..."
+                  : "Send order"
+                : loading
+                ? "Updating order..."
+                : "Update order"}
             </button>
             <button
               type="button"

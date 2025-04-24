@@ -124,7 +124,7 @@ export const order_items: orderItemsType[] = [
     brand_id: 1,
     item_id: 2,
     item_qty: 2,
-    order_item_status_id: 2,
+    order_item_status_id: 1,
   },
   {
     order_id: 3,
@@ -152,9 +152,9 @@ export const brands: brandsType[] = [
 
 export const items: itemsType[] = [
   {
-    item_id: 3,
-    item_name: "Item_3",
-    item_plu: "CAT3-0001",
+    item_id: 1,
+    item_name: "Item_1",
+    item_plu: "CAT1-0001",
   },
   {
     item_id: 2,
@@ -162,21 +162,26 @@ export const items: itemsType[] = [
     item_plu: "CAT2-0001",
   },
   {
-    item_id: 1,
-    item_name: "Item_1",
-    item_plu: "CAT1-0001",
+    item_id: 3,
+    item_name: "Item_3",
+    item_plu: "CAT3-0001",
+  },
+  {
+    item_id: 4,
+    item_name: "Item_4",
+    item_plu: "CAT4-0001",
   },
 ];
 
 export const order_status_history: orderStatusHistoryType[] = [
   // brand_id is auto-incremented
   {
-    order_status_id: 2,
+    order_status_id: 1,
     order_id: 1,
     status_update: "2025-01-22T22:30:00Z",
   },
   {
-    order_status_id: 3,
+    order_status_id: 1,
     order_id: 1,
     status_update: "2025-01-22T22:45:00Z",
   },
@@ -186,7 +191,7 @@ export const order_status_history: orderStatusHistoryType[] = [
     status_update: "2025-02-15T12:30:00Z",
   },
   {
-    order_status_id: 4,
+    order_status_id: 1,
     order_id: 3,
     status_update: "2025-04-02T18:45:00Z",
   },
