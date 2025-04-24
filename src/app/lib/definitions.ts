@@ -88,6 +88,7 @@ export interface OrderFormProps {
     status_update: string;
     order_items: DishOrder[];
   };
+  onCancel: () => void;
 }
 
 export interface DishOrder {

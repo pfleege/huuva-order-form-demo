@@ -39,18 +39,14 @@ const initialOrderData = {
 
 const ActiveOrders = () => {
   const [loading, setLoading] = useState(false);
-  // const [editOrderVisible, setEditOrderVisible] = useState(false);
-  // const [orderDetailsVisible, setOrderDetailsVisible] = useState(false);
   const [isNewOrder, setIsNewOrder] = useState(false); // Able to use same OrderDetails component for new order creation and for editing existing orders - default: edit existing order
-  // const [orderDetails, setOrderDetails] = useState<
-  //   OrderFormProps["orderData"][]
-  // >([]);
   const [searchResult, setSearchResult] = useState<
     OrderFormProps["orderData"][]
   >([]);
   const [selectedOrder, setSelectedOrder] = useState<
     OrderFormProps["orderData"] | null
   >(null);
+  const [orderFormVisible, setOrderFormVisible] = useState(false);
 
   // Click on Display Orders button
   const handleSubmit = async (evt: React.FormEvent) => {
@@ -61,7 +57,7 @@ const ActiveOrders = () => {
       const response = await fetch(`/api/orders`);
       const orderData = await response.json();
       if (orderData && Array.isArray(orderData)) {
-        console.log(orderData);
+        // console.log(orderData);
         setSearchResult(orderData);
       } else {
         setSearchResult([]);
@@ -77,39 +73,22 @@ const ActiveOrders = () => {
   // Click on order from search result
   const handleClick = (order: OrderFormProps["orderData"]) => {
     setSelectedOrder(order);
-    // setEditOrderVisible(true);
+    setOrderFormVisible(true);
     console.log("Selected order:", order);
   };
-
-  // Click on View Order Details button
-  // const handleViewOrderDetails = (order: OrderFormProps["orderData"]) => {
-  //   setSelectedOrder(order);
-  //   setIsNewOrder(false);
-  //   setOrderDetailsVisible(true);
-  // };
 
   // Click on Add New Order button
   const handleAddOrder = () => {
     setSelectedOrder(initialOrderData);
+    setOrderFormVisible(true);
     setIsNewOrder(true);
   };
 
-  // Handle status change for the entire order
-  // const handleStatusChange = (evt: React.ChangeEvent<HTMLSelectElement>) => {
-  //   if (!selectedOrder) return;
-
-  //   setSelectedOrder({
-  //     ...selectedOrder,
-  //     order_status_id: parseInt(evt.target.value, 10),
-  //   });
-  // };
-
-  // OLD: Click on View Order Details button
-  // const handleViewOrderDetails = (order: OrderFormProps["orderData"]) => {
-  //   setOrderDetails([order]);
-  //   setOrderDetailsVisible(true);
-  //   console.log("Selected order:", order);
-  // };
+  // Function to hide the NewOrder component
+  const handleCancelOrder = () => {
+    setOrderFormVisible(false);
+    setSelectedOrder(null); // clear selected order
+  };
 
   return (
     <div className="flex justify-center my-20">
@@ -133,9 +112,20 @@ const ActiveOrders = () => {
               Add New Order
             </button>
 
-            {isNewOrder && selectedOrder && (
+            {orderFormVisible && isNewOrder && selectedOrder && (
               // <OrderDetails orderData={selectedOrder} />
-              <NewOrder orderData={selectedOrder} />
+              <NewOrder
+                orderData={selectedOrder}
+                onCancel={handleCancelOrder}
+              />
+            )}
+
+            {orderFormVisible && selectedOrder && !isNewOrder && (
+              // <OrderDetails orderData={selectedOrder} />
+              <NewOrder
+                orderData={selectedOrder}
+                onCancel={handleCancelOrder}
+              />
             )}
           </div>
         </div>
@@ -246,10 +236,6 @@ const ActiveOrders = () => {
         </div>
       )} */}
       {/* {selectedOrder && !isNewOrder && orderDetailsVisible && ( */}
-      {selectedOrder && !isNewOrder && (
-        // <OrderDetails orderData={selectedOrder} />
-        <NewOrder orderData={selectedOrder} />
-      )}
     </div>
   );
 };
