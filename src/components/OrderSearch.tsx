@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { OrderFormProps } from "@/app/lib/definitions";
-import OrderDetails from "./OrderDetails";
+// import OrderDetails from "./OrderDetails";
+import NewOrder from "./NewOrder";
 
 const initialOrderData = {
   account_name: "",
@@ -38,8 +39,8 @@ const initialOrderData = {
 
 const ActiveOrders = () => {
   const [loading, setLoading] = useState(false);
-  const [editOrderVisible, setEditOrderVisible] = useState(false);
-  const [orderDetailsVisible, setOrderDetailsVisible] = useState(false);
+  // const [editOrderVisible, setEditOrderVisible] = useState(false);
+  // const [orderDetailsVisible, setOrderDetailsVisible] = useState(false);
   const [isNewOrder, setIsNewOrder] = useState(false); // Able to use same OrderDetails component for new order creation and for editing existing orders - default: edit existing order
   // const [orderDetails, setOrderDetails] = useState<
   //   OrderFormProps["orderData"][]
@@ -76,16 +77,16 @@ const ActiveOrders = () => {
   // Click on order from search result
   const handleClick = (order: OrderFormProps["orderData"]) => {
     setSelectedOrder(order);
-    setEditOrderVisible(true);
+    // setEditOrderVisible(true);
     console.log("Selected order:", order);
   };
 
   // Click on View Order Details button
-  const handleViewOrderDetails = (order: OrderFormProps["orderData"]) => {
-    setSelectedOrder(order);
-    setIsNewOrder(false);
-    setOrderDetailsVisible(true);
-  };
+  // const handleViewOrderDetails = (order: OrderFormProps["orderData"]) => {
+  //   setSelectedOrder(order);
+  //   setIsNewOrder(false);
+  //   setOrderDetailsVisible(true);
+  // };
 
   // Click on Add New Order button
   const handleAddOrder = () => {
@@ -94,14 +95,14 @@ const ActiveOrders = () => {
   };
 
   // Handle status change for the entire order
-  const handleStatusChange = (evt: React.ChangeEvent<HTMLSelectElement>) => {
-    if (!selectedOrder) return;
+  // const handleStatusChange = (evt: React.ChangeEvent<HTMLSelectElement>) => {
+  //   if (!selectedOrder) return;
 
-    setSelectedOrder({
-      ...selectedOrder,
-      order_status_id: parseInt(evt.target.value, 10),
-    });
-  };
+  //   setSelectedOrder({
+  //     ...selectedOrder,
+  //     order_status_id: parseInt(evt.target.value, 10),
+  //   });
+  // };
 
   // OLD: Click on View Order Details button
   // const handleViewOrderDetails = (order: OrderFormProps["orderData"]) => {
@@ -112,13 +113,13 @@ const ActiveOrders = () => {
 
   return (
     <div className="flex justify-center my-20">
-      <div className="bg-[url('/modalBg.jpg')] bg-contain text-black p-6 rounded-2xl border-4 border-stone-700 shadow-[0_0_20px_rgba(255,255,255,0.7)]">
+      <div className="flex flex-col bg-[url('/modalBg.jpg')] bg-contain text-black p-6 rounded-2xl border-4 border-stone-700 shadow-[0_0_20px_rgba(255,255,255,0.7)]">
         <div className="flex justify-between w-full">
-          <div className="flex text-2xl mx-auto">
+          <div className="flex flex-col items-center text-2xl mx-auto">
             <form className="flex gap-2 text-2xl" onSubmit={handleSubmit}>
               <button
                 type="submit"
-                className="px-4 pt-1.5 pb-2 bg-blue-500 text-white rounded-xl disabled:bg-gray-400 hover:cursor-pointer"
+                className="px-5 pt-1.5 pb-2 mb-4 bg-blue-500 text-white rounded-xl disabled:bg-gray-400 hover:cursor-pointer"
                 disabled={loading}
               >
                 {loading ? "Searching..." : "Display Orders"}
@@ -133,7 +134,8 @@ const ActiveOrders = () => {
             </button>
 
             {isNewOrder && selectedOrder && (
-              <OrderDetails orderData={selectedOrder} />
+              // <OrderDetails orderData={selectedOrder} />
+              <NewOrder orderData={selectedOrder} />
             )}
           </div>
         </div>
@@ -175,7 +177,7 @@ const ActiveOrders = () => {
           </div>
         )}
       </div>
-      {selectedOrder && editOrderVisible && (
+      {/* {selectedOrder && editOrderVisible && (
         <div className="h-[250px] bg-[url('/modalBg.jpg')] bg-contain text-white p-6 rounded-2xl border-4 border-stone-700 shadow-[0_0_20px_rgba(255,255,255,0.7)]">
           <h3 className="font-bold mb-2">Edit Order Status</h3>
           <form
@@ -242,9 +244,11 @@ const ActiveOrders = () => {
             </button>
           </form>
         </div>
-      )}
-      {selectedOrder && !isNewOrder && orderDetailsVisible && (
-        <OrderDetails orderData={selectedOrder} />
+      )} */}
+      {/* {selectedOrder && !isNewOrder && orderDetailsVisible && ( */}
+      {selectedOrder && !isNewOrder && (
+        // <OrderDetails orderData={selectedOrder} />
+        <NewOrder orderData={selectedOrder} />
       )}
     </div>
   );

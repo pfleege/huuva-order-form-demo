@@ -63,9 +63,9 @@ const Navbar = () => {
                   : "hover:text-white text-black"
               }
             >
-              View Orders
+              Orders
             </Link>
-            <Link
+            {/* <Link
               href="/add-order"
               className={
                 pathname === "/add-order"
@@ -74,7 +74,7 @@ const Navbar = () => {
               }
             >
               Add Order
-            </Link>
+            </Link> */}
           </>
         </div>
       </div>
