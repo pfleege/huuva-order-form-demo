@@ -274,6 +274,7 @@ import { AddOrderProps } from "@/app/lib/definitions";
 import { OrderFormProps } from "@/app/lib/definitions";
 
 const initialOrderData = {
+  order_id: 0,
   account_name: "",
   account_email: "",
   account_phone: "",
@@ -306,6 +307,7 @@ const NewOrder = ({ orderData }: OrderFormProps) => {
     if (orderData) {
       // Pre-fill the form with orderData
       setOrderData({
+        order_id: orderData.order_id || 0,
         account_name: orderData.account_name || "",
         account_email: orderData.account_email || "",
         account_phone: orderData.account_phone || "",
@@ -404,18 +406,18 @@ const NewOrder = ({ orderData }: OrderFormProps) => {
             evt.preventDefault();
             setLoading(true);
             // console.log("Submitting order data:", JSON.stringify(orderData));
-            // try {
-            //   const response = await fetch("/api/order-details", {
-            //     method: "PUT",
-            //     headers: { "Content-Type": "application/json" },
-            //     body: JSON.stringify(orderInfo),
-            //   });
-            //   if (!response.ok) throw new Error("Failed to update order");
-            //   alert("Order has been updated!");
-            // } catch (error) {
-            //   alert("There was an error updating the order.");
-            //   console.error(error);
-            // }
+            try {
+              const response = await fetch("/api/order-details", {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(orderInfo),
+              });
+              if (!response.ok) throw new Error("Failed to update order");
+              alert("Order has been updated!");
+            } catch (error) {
+              alert("There was an error updating the order.");
+              console.error(error);
+            }
             console.log("Submitting order data:", JSON.stringify(orderInfo));
             setLoading(false);
             setOrderData(initialOrderData);

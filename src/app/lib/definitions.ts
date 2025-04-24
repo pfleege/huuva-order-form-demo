@@ -103,6 +103,7 @@ export interface DishOrder {
 
 export interface AddOrderProps {
   orderData?: {
+    order_id: number;
     account_name: string;
     account_email: string;
     account_phone: string;
