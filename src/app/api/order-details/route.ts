@@ -28,11 +28,17 @@ export async function PUT(req: Request) {
   const sql = neon(process.env.DATABASE_URL!);
 
   // Check items in existing orders in case we want to delete an item from the order
-  const existingOrderItems = await sql`
+  /*   const existingOrderItems = await sql`
     SELECT order_items_id, item_id, item_qty, order_item_status_id
     FROM order_items
     WHERE order_id = ${order_id}
-  `;
+  `; */
+  // Only order_items_id is of interest to us, so we can use the following query instead
+  const existingOrderItems = await sql`
+  SELECT order_items_id
+  FROM order_items
+  WHERE order_id = ${order_id}
+`;
 
   // Create an array of order_items_id from the existing order items
   const existingOrderItemsIds = existingOrderItems.map(
@@ -54,9 +60,38 @@ export async function PUT(req: Request) {
     `;
   }
 
+  // Check if it is a new order_item (with dummy id = 0) and create an array of all new order_items
+  const newOrderItems = dishes.filter(
+    (dish: DishOrder) => dish.order_items_id === 0
+  );
+
+  // If it is a new order_item -> add to system with new order_item_id (i.e. don't specify order_items_id -> it will be auto-incremented)
+  for (const dish of newOrderItems) {
+    await sql`
+      INSERT INTO order_items (
+        order_id, brand_id, item_id, item_qty, order_item_status_id
+      ) VALUES (
+        ${order_id}, ${dish.brand_id}, ${dish.item_id}, ${dish.item_qty}, ${dish.order_item_status_id}
+      )
+    `;
+  }
+
+  // If it is an existing order_item -> update only brand_id, item_id, item_qty, order_item_status_id. existingOrderItems specified in the query above
+  for (const dish of existingOrderItems) {
+    await sql`
+      UPDATE order_items
+      SET
+        brand_id = ${dish.brand_id},
+        item_id = ${dish.item_id},
+        item_qty = ${dish.item_qty},
+        order_item_status_id = ${dish.order_item_status_id}
+      WHERE order_items_id = ${dish.order_items_id}
+    `;
+  }
+
   try {
     // Check status change: if one item's status has changed to 2, then update the order_status for the whole order to 2 (i.e. "in progress")
-    // When all items haev a status 3, then update the order_status for the whole order to 3 (i.e. "ready for delivery")
+    // When all items have a status 3, then update the order_status for the whole order to 3 (i.e. "ready for delivery")
     let itemStatusChangedTo2 = false;
     let allItemsStatus3 = true;
 
