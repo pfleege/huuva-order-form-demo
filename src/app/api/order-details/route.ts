@@ -1,3 +1,4 @@
+import { DishOrder } from "@/app/lib/definitions";
 import { neon } from "@neondatabase/serverless";
 import { NextResponse } from "next/server";
 
@@ -25,6 +26,33 @@ export async function PUT(req: Request) {
   );
 
   const sql = neon(process.env.DATABASE_URL!);
+
+  // Check items in existing orders in case we want to delete an item from the order
+  const existingOrderItems = await sql`
+    SELECT order_items_id, item_id, item_qty, order_item_status_id
+    FROM order_items
+    WHERE order_id = ${order_id}
+  `;
+
+  // Create an array of order_items_id from the existing order items
+  const existingOrderItemsIds = existingOrderItems.map(
+    (item) => item.order_items_id
+  );
+  // Create an array of order_items_id from the new order items
+  const newOrderItemsIds: number[] = dishes.map(
+    (item: DishOrder) => item.order_items_id
+  );
+  // Create updated array where we remove the order_items_id that are not in the updated order
+  const orderItemsIdsToDelete = existingOrderItemsIds.filter(
+    (id) => !newOrderItemsIds.includes(id)
+  );
+  // Delete order_items that have been removed from the order
+  if (orderItemsIdsToDelete.length > 0) {
+    await sql`
+      DELETE FROM order_items
+      WHERE order_items_id = ANY(${orderItemsIdsToDelete})
+    `;
+  }
 
   try {
     // Check status change: if one item's status has changed to 2, then update the order_status for the whole order to 2 (i.e. "in progress")
