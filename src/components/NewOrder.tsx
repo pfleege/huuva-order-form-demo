@@ -2,31 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { AddOrderProps } from "@/app/lib/definitions";
-import { OrderFormProps } from "@/app/lib/definitions";
+import { OrderFormProps, initialOrderData } from "@/app/lib/definitions";
 
-const initialOrderData = {
-  order_id: 0,
-  account_name: "",
-  account_email: "",
-  account_phone: "",
-  city: "",
-  street: "",
-  postal_code: "",
-  dishes: [
-    {
-      brand_id: 0,
-      order_items_id: 0,
-      brand_name: "",
-      item_name: "",
-      item_id: 0,
-      item_qty: 1,
-      order_item_status_id: 0,
-      order_status: "order pending",
-    },
-  ],
-};
-
-const NewOrder = ({ orderData, onCancel }: OrderFormProps) => {
+const NewOrder = ({ orderData, onCancel, isNewOrder }: OrderFormProps) => {
   const [loading, setLoading] = useState(false);
   const [orderInfo, setOrderData] =
     useState<AddOrderProps["orderData"]>(initialOrderData);
@@ -61,7 +39,7 @@ const NewOrder = ({ orderData, onCancel }: OrderFormProps) => {
     }
   }, [orderData]);
   //
-
+  console.log("New order?", isNewOrder);
   // Generic handler for all input fields
   const handleChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = evt.target;
@@ -81,7 +59,10 @@ const NewOrder = ({ orderData, onCancel }: OrderFormProps) => {
       const newDishes = [...(prev?.dishes || [])];
       newDishes[idx] = {
         ...newDishes[idx],
-        [name]: name === "item_qty" ? Number(value) : value,
+        [name]:
+          name === "item_qty" || name === "order_item_status_id"
+            ? Number(value)
+            : value,
       };
       return {
         ...prev!,
@@ -89,6 +70,7 @@ const NewOrder = ({ orderData, onCancel }: OrderFormProps) => {
       };
     });
   };
+
   // Add a new empty dish order
   const addDishOrder = () => {
     setOrderData((prev) => ({
@@ -133,13 +115,23 @@ const NewOrder = ({ orderData, onCancel }: OrderFormProps) => {
             evt.preventDefault();
             setLoading(true);
             try {
-              const response = await fetch("/api/order-details", {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(orderInfo),
-              });
-              if (!response.ok) throw new Error("Failed to update order");
-              alert("Order has been updated!");
+              if (orderInfo?.dishes[0]?.order_items_id === 0) {
+                const response = await fetch("/api/order-details", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify(orderInfo),
+                });
+                if (!response.ok) throw new Error("Failed to update order");
+                alert("Order has been updated!");
+              } else {
+                const response = await fetch("/api/order-details", {
+                  method: "PUT",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify(orderInfo),
+                });
+                if (!response.ok) throw new Error("Failed to add order");
+                alert("Order has been added!");
+              }
             } catch (error) {
               alert("There was an error updating the order.");
               console.error(error);

@@ -1,41 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { OrderFormProps } from "@/app/lib/definitions";
-// import OrderDetails from "./OrderDetails";
+import { OrderFormProps, initialOrderData } from "@/app/lib/definitions";
 import NewOrder from "./NewOrder";
-
-const initialOrderData = {
-  account_name: "",
-  account_email: "",
-  account_phone: "",
-  account_id: 0,
-  address_id: 0,
-  brand_id: 0,
-  order_channel_id: 0,
-  city: "",
-  street: "",
-  postal_code: "",
-  order_created: "",
-  order_id: 0,
-  order_status: "order pending",
-  order_status_id: 0,
-  order_items: [],
-  pickup_time: "",
-  status_update: "",
-  dishes: [
-    {
-      brand_id: 0,
-      order_items_id: 0,
-      brand_name: "",
-      item_name: "",
-      item_id: 0,
-      item_qty: 1,
-      order_item_status_id: 0,
-      order_status: "order pending",
-    },
-  ],
-};
 
 const ActiveOrders = () => {
   const [loading, setLoading] = useState(false);
@@ -87,7 +54,7 @@ const ActiveOrders = () => {
   // Function to hide the NewOrder component
   const handleCancelOrder = () => {
     setOrderFormVisible(false);
-    setSelectedOrder(null); // clear selected order
+    setSelectedOrder(null);
   };
 
   return (
@@ -113,18 +80,18 @@ const ActiveOrders = () => {
             </button>
 
             {orderFormVisible && isNewOrder && selectedOrder && (
-              // <OrderDetails orderData={selectedOrder} />
               <NewOrder
                 orderData={selectedOrder}
                 onCancel={handleCancelOrder}
+                isNewOrder={isNewOrder}
               />
             )}
 
             {orderFormVisible && selectedOrder && !isNewOrder && (
-              // <OrderDetails orderData={selectedOrder} />
               <NewOrder
                 orderData={selectedOrder}
                 onCancel={handleCancelOrder}
+                isNewOrder={isNewOrder}
               />
             )}
           </div>
@@ -134,8 +101,6 @@ const ActiveOrders = () => {
             {searchResult.map((order) => (
               <div
                 onClick={() => handleClick(order)}
-                // key={order?.order_id || idx}
-                // key={`${order?.order_id ?? "order"}-${idx}`}
                 key={order?.order_id}
                 className="mb-4 border-b p-2 pb-4 rounded-xl cursor-pointer hover:bg-gray-100 hover:text-black w-full"
               >
@@ -167,75 +132,6 @@ const ActiveOrders = () => {
           </div>
         )}
       </div>
-      {/* {selectedOrder && editOrderVisible && (
-        <div className="h-[250px] bg-[url('/modalBg.jpg')] bg-contain text-white p-6 rounded-2xl border-4 border-stone-700 shadow-[0_0_20px_rgba(255,255,255,0.7)]">
-          <h3 className="font-bold mb-2">Edit Order Status</h3>
-          <form
-            onSubmit={async (evt) => {
-              evt.preventDefault();
-              // Next step: Add API for adding new status
-              // For order status: new row in order_status_history table
-              // For order item update: replace current data in table
-              try {
-                const response = await fetch("/api/order-update", {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({
-                    order_id: selectedOrder.order_id,
-                    order_status_id: selectedOrder.order_status_id,
-                  }),
-                });
-                if (!response.ok) {
-                  throw new Error("Failed to update order status");
-                }
-                setEditOrderVisible(false);
-                setSearchResult([]);
-                alert("Order status has been updated!");
-              } catch (error) {
-                alert("There was an error updating the order status.");
-                console.error(error);
-              }
-            }}
-          >
-            <div className="mb-2">
-              <select
-                name="order_status_id"
-                value={selectedOrder.order_status_id}
-                className="border-[1px] w-[285px] px-2 py-1 rounded bg-amber-50 text-black text-2xl"
-                onChange={(evt) => handleStatusChange(evt)}
-              >
-                <option value="1">order pending</option>
-                <option value="2">order in progress</option>
-                <option value="3">order ready for delivery</option>
-                <option value="4">order delivered</option>
-              </select>
-            </div>
-            <div className="flex justify-between gap-1 text-2xl">
-              <button
-                type="submit"
-                className="bg-blue-500 text-white px-4 py-1 rounded-lg w-[50%] hover:cursor-pointer"
-              >
-                Save
-              </button>
-              <button
-                type="button"
-                className="bg-orange-300 text-white px-4 py-1 rounded-lg w-[50%] hover:cursor-pointer"
-                onClick={() => setSelectedOrder(null)}
-              >
-                Cancel
-              </button>
-            </div>
-            <button
-              type="button"
-              className="bg-green-500 w-full mt-2 text-white px-4 py-1 text-2xl rounded-lg mb-10 hover:cursor-pointer"
-              onClick={() => handleViewOrderDetails(selectedOrder!)}
-            >
-              View Order Details
-            </button>
-          </form>
-        </div>
-      )} */}
-      {/* {selectedOrder && !isNewOrder && orderDetailsVisible && ( */}
     </div>
   );
 };

@@ -67,7 +67,40 @@ export type orderStatusHistoryType = {
   status_update: string;
 };
 
-// INTERFACES:
+// INITIAL FORM DATA
+export const initialOrderData = {
+  account_name: "",
+  account_email: "",
+  account_phone: "",
+  account_id: 0,
+  address_id: 0,
+  brand_id: 0,
+  order_channel_id: 0,
+  city: "",
+  street: "",
+  postal_code: "",
+  order_created: "",
+  order_id: 0,
+  order_status: "order pending",
+  order_status_id: 0,
+  order_items: [],
+  pickup_time: "",
+  status_update: "",
+  dishes: [
+    {
+      brand_id: 0,
+      order_items_id: 0,
+      brand_name: "",
+      item_name: "",
+      item_id: 0,
+      item_qty: 1,
+      order_item_status_id: 0,
+      order_status: "order pending",
+    },
+  ],
+};
+
+// INTERFACES - OrderSearch, NewOrder Searchbar:
 export interface OrderFormProps {
   orderData?: {
     account_email: string;
@@ -89,6 +122,7 @@ export interface OrderFormProps {
     order_items: DishOrder[];
   };
   onCancel: () => void;
+  isNewOrder?: boolean;
 }
 
 export interface DishOrder {
@@ -102,6 +136,7 @@ export interface DishOrder {
   order_status: string;
 }
 
+//NewOrder
 export interface AddOrderProps {
   orderData?: {
     order_id: number;
@@ -124,20 +159,6 @@ export interface DashboardProps {
     total_qty: number;
   };
 }
-
-// export interface OrderDetailsProps {
-//   orderDetails: {
-//     account_email: string;
-//     account_id: number;
-//     account_name: string;
-//     account_phone: string;
-//     address_id: number;
-//     brand_id: number;
-//     order_channel_id: number;
-//     order_created: string;
-//     order_items: DishOrder[];
-//   }[];
-// }
 
 export interface OrderDetailsProps {
   orderDetails?: OrderFormProps["orderData"];

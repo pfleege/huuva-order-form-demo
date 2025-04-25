@@ -2,15 +2,9 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect } from "react";
 
 const Navbar = () => {
   const pathname = usePathname();
-
-  useEffect(() => {
-    // Scroll up by 100px on every route change
-    window.scrollBy({ top: -75, left: 0, behavior: "smooth" });
-  }, [pathname]); // Runs when the pathname changes
 
   return (
     <>
@@ -65,16 +59,6 @@ const Navbar = () => {
             >
               Orders
             </Link>
-            {/* <Link
-              href="/add-order"
-              className={
-                pathname === "/add-order"
-                  ? "font-bold"
-                  : "hover:text-white text-black"
-              }
-            >
-              Add Order
-            </Link> */}
           </>
         </div>
       </div>
