@@ -18,7 +18,7 @@ export async function GET(request: Request) {
   }
   try {
     const sql = neon(process.env.DATABASE_URL!);
-    const [user] = await sql`
+    const user = await sql`
 
       SELECT 
         acc.account_name,
@@ -53,7 +53,7 @@ export async function GET(request: Request) {
         acc.account_name, ord.order_created, ost.order_status, ost.status_update
       
       `;
-    // console.log("API orders:", user);
+    console.log("API orders:", user);
     return NextResponse.json(user || null);
   } catch (error) {
     console.log(`Error: ${error}`);
