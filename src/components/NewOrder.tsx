@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { AddOrderProps } from "@/app/lib/definitions";
 import { OrderFormProps, initialOrderData } from "@/app/lib/definitions";
 
-const NewOrder = ({ orderData, onCancel, isNewOrder }: OrderFormProps) => {
+const NewOrder = ({ orderData, onCancel }: OrderFormProps) => {
   const [loading, setLoading] = useState(false);
   const [orderInfo, setOrderData] =
     useState<AddOrderProps["orderData"]>(initialOrderData);
@@ -38,8 +38,7 @@ const NewOrder = ({ orderData, onCancel, isNewOrder }: OrderFormProps) => {
       setOrderData(initialOrderData);
     }
   }, [orderData]);
-  //
-  console.log("New order?", isNewOrder);
+
   // Generic handler for all input fields
   const handleChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = evt.target;
@@ -139,6 +138,7 @@ const NewOrder = ({ orderData, onCancel, isNewOrder }: OrderFormProps) => {
             // console.log("Submitting order data:", JSON.stringify(orderInfo));
             setLoading(false);
             setOrderData(initialOrderData);
+            onCancel();
           }}
         >
           <div className="flex mb-2 text-2xl justify-between">

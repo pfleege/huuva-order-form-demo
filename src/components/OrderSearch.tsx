@@ -42,6 +42,14 @@ const ActiveOrders = () => {
     setSelectedOrder(order);
     setOrderFormVisible(true);
     console.log("Selected order:", order);
+
+    // Scroll up to view the selected order details
+    setTimeout(() => {
+      window.scrollTo({
+        top: 900,
+        behavior: "smooth",
+      });
+    }, 0);
   };
 
   // Click on Add New Order button
@@ -83,7 +91,6 @@ const ActiveOrders = () => {
               <NewOrder
                 orderData={selectedOrder}
                 onCancel={handleCancelOrder}
-                isNewOrder={isNewOrder}
               />
             )}
 
@@ -91,7 +98,6 @@ const ActiveOrders = () => {
               <NewOrder
                 orderData={selectedOrder}
                 onCancel={handleCancelOrder}
-                isNewOrder={isNewOrder}
               />
             )}
           </div>

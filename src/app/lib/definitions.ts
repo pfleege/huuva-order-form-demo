@@ -122,7 +122,6 @@ export interface OrderFormProps {
     order_items: DishOrder[];
   };
   onCancel: () => void;
-  isNewOrder?: boolean;
 }
 
 export interface DishOrder {
