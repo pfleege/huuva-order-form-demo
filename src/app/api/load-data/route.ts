@@ -138,6 +138,27 @@ async function loadTables() {
       ORDER BY osth.order_id, osth.status_update DESC;
     `);
 
+  // Views for Dashboard queries
+  await client.query(`
+      CREATE VIEW status_change_times AS
+      SELECT
+      order_id,
+      current_status,
+      time_diff
+      FROM (
+      SELECT
+        order_id,
+        order_status_id AS current_status,
+        LAG(order_status_id) OVER win AS previous_status,
+        status_update AS current_time,
+        LAG(status_update) OVER win AS previous_time,
+        status_update - LAG(status_update) OVER win AS time_diff
+      FROM order_status_history
+      WINDOW win AS (PARTITION BY order_id ORDER BY status_update)
+      )
+      WHERE not time_diff isnull
+  `);
+
   /* 
   Uncomment to insert demo data from /app/lib/demoData.ts
   */
