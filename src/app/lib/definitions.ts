@@ -149,14 +149,19 @@ export interface AddOrderProps {
   };
 }
 
-export interface DashboardProps {
-  dashboardData?: {
-    brand_name: string;
-    item_id: number;
-    item_name: string;
-    item_qty: number;
-    total_qty: number;
-  };
+export interface DashboardData {
+  brand_name: string;
+  item_id: number;
+  item_name: string;
+  item_qty: number;
+  total_qty: number;
+}
+
+export interface StatusTime {
+  current_status: number;
+  current_status_text: string;
+  minutes: number;
+  seconds: number;
 }
 
 export interface OrderDetailsProps {
