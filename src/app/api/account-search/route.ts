@@ -53,7 +53,7 @@ export async function GET(request: Request) {
         acc.account_name, ord.order_created, ost.order_status, ost.status_update
       
       `;
-    console.log("API orders:", user);
+    // console.log("API orders:", user);
     return NextResponse.json(user || null);
   } catch (error) {
     console.log(`Error: ${error}`);
