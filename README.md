@@ -10,7 +10,7 @@
 
 The Order Form demo is a brief introductory project on how to connect a PostgreSQL database to a Next.js based project.
 
-To test out the demo, you can thus either use the link below, or download the project and connect it to your own relational database. Note that the SQL syntax might differ slightly from the one used in the Neon database, so change the queries according to the required syntax.
+To test out the demo, you can thus either use the link below, or download the project and connect it to your own relational database.
 
 Time spent on building the project: approximately 36-40 hours. Unfortunately a lot of extra time was spent on re-building the database structure, as the original structure proved impractical in the end.
 
@@ -19,6 +19,10 @@ Time spent on building the project: approximately 36-40 hours. Unfortunately a l
 Due to time constraints, some compromises were made towards the end - some of components are unnecessarily long and could benefit from splitting them into smaller pieces. The project as a whole contain a handful components that have been given their own pages. You can view them by clicking on the navlinks.
 
 ## Initial set up
+
+You can load data into the project by using the included demo data in the lib -folder (demoData.ts). If you want to modify which tables are being loaded, go to the API in the app/api/load-data -folder and read the instructions on top.
+
+Note that the SQL syntax might differ slightly from the one used in here (the Neon database), so change the queries according to the required syntax.
 
 In order to load the available demo data, you need to type "localhost:3000/api/load-data" in your browser and hit enter:
 

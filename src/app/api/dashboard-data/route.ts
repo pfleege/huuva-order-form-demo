@@ -6,8 +6,9 @@ export async function GET() {
     const sql = neon(process.env.DATABASE_URL!);
 
     // Add array to store the results of the two queries
-    const [itemSales, statusTimes] = await sql.transaction([
-      sql`
+    const [itemSales, statusTimes, troughPut, customerOrders] =
+      await sql.transaction([
+        sql`
         SELECT
           brd.brand_name,
           itm.item_name,
@@ -18,7 +19,7 @@ export async function GET() {
         GROUP BY itm.item_name, brd.brand_name
         ORDER BY total_qty DESC
       `,
-      sql`
+        sql`
         SELECT
           current_status,
           CASE current_status
@@ -36,12 +37,52 @@ export async function GET() {
           current_status;
         ;
       `,
-    ]);
-    console.log("Item Sales:", itemSales);
-    console.log("Status Times:", statusTimes);
+        sql`
+        SELECT
+          DATE(delivered.status_update) AS order_date,
+          EXTRACT(HOUR FROM delivered.status_update) AS order_hour,
+          COUNT(DISTINCT delivered.order_id) AS throughput
+        FROM
+          order_status_history AS received
+        JOIN
+          order_status_history AS delivered
+            ON received.order_id = delivered.order_id
+        WHERE
+          received.order_status_id = 1
+          AND delivered.order_status_id = 4
+          AND delivered.status_update > received.status_update
+          AND EXTRACT(HOUR FROM delivered.status_update) BETWEEN 7 AND 21
+        GROUP BY
+          DATE(delivered.status_update),
+          EXTRACT(HOUR FROM delivered.status_update)
+        ORDER BY
+          order_date, order_hour;
+      `,
+        sql`
+        SELECT
+          acc.account_id,
+          acc.account_name,
+          acc.account_email,
+          COUNT(ord.order_id) AS number_of_orders
+        FROM
+          accounts acc
+        LEFT JOIN
+          orders ord ON acc.account_id = ord.account_id
+        GROUP BY
+          acc.account_id,
+          acc.account_name,
+          acc.account_email
+        ORDER BY
+          acc.account_id;
+      `,
+      ]);
+    // console.log("Item Sales:", itemSales);
+    // console.log("Status Times:", statusTimes);
     return NextResponse.json({
       itemSales: itemSales || [],
       statusTimes: statusTimes || [],
+      troughPut: troughPut || [],
+      customerOrders: customerOrders || [],
     });
   } catch (error) {
     console.error(`Database error: ${error}`);

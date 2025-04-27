@@ -1,6 +1,8 @@
 /* 
 To load data into database:
-1) Uncomment relevant step below
+1) Uncomment/comment out relevant step below
+  - Comment out the tables from demoData.ts you want to skip (rows 15-23)
+  - Comment out the insert steps you want to skip (rows 168-317)
 2) Go to page http://localhost:3000/api/load-data and run page
 */
 
