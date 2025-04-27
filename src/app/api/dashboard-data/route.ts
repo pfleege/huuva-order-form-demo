@@ -39,7 +39,8 @@ export async function GET() {
       `,
         sql`
         SELECT
-          DATE(delivered.status_update) AS order_date,
+          --DATE(delivered.status_update) AS order_date,
+          TO_CHAR(delivered.status_update, 'DD-MM-YYYY') AS order_date,
           EXTRACT(HOUR FROM delivered.status_update) AS order_hour,
           COUNT(DISTINCT delivered.order_id) AS throughput
         FROM
@@ -53,7 +54,8 @@ export async function GET() {
           AND delivered.status_update > received.status_update
           AND EXTRACT(HOUR FROM delivered.status_update) BETWEEN 7 AND 21
         GROUP BY
-          DATE(delivered.status_update),
+          --DATE(delivered.status_update),
+          TO_CHAR(delivered.status_update, 'DD-MM-YYYY'),
           EXTRACT(HOUR FROM delivered.status_update)
         ORDER BY
           order_date, order_hour;
@@ -78,6 +80,8 @@ export async function GET() {
       ]);
     // console.log("Item Sales:", itemSales);
     // console.log("Status Times:", statusTimes);
+    // console.log("Order Throughput:", troughPut);
+    // console.log("Orders per Customer:", customerOrders);
     return NextResponse.json({
       itemSales: itemSales || [],
       statusTimes: statusTimes || [],

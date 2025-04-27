@@ -164,6 +164,19 @@ export interface StatusTime {
   seconds: number;
 }
 
+export interface TroughputTime {
+  order_date: string;
+  order_hour: number;
+  throughput: number;
+}
+
+export interface CustomerOrders {
+  account_id: number;
+  account_name: string;
+  account_email: string;
+  number_of_orders: number;
+}
+
 export interface OrderDetailsProps {
   orderDetails?: OrderFormProps["orderData"];
   // orderDetails?: OrderFormProps["orderData"][];

@@ -1,13 +1,17 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { StatusTime } from "@/app/lib/definitions";
-import { DashboardData } from "@/app/lib/definitions";
+import {
+  DashboardData,
+  StatusTime,
+  TroughputTime,
+} from "@/app/lib/definitions";
 
 const Dashboard = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [popularItems, setPopularItems] = useState<DashboardData[]>([]);
   const [averageTimes, setAverageTimes] = useState<StatusTime[]>([]);
+  const [throughputTimes, setThroughputTimes] = useState<TroughputTime[]>([]);
 
   useEffect(() => {
     async function fetchData() {
@@ -19,14 +23,17 @@ const Dashboard = () => {
         if (data) {
           setPopularItems(data.itemSales || []);
           setAverageTimes(data.statusTimes || []);
+          setThroughputTimes(data.troughPut || []);
         } else {
           setPopularItems([]);
           setAverageTimes([]);
+          setThroughputTimes([]);
         }
       } catch (error) {
         console.error("Fetching data failed:", error);
         setPopularItems([]);
         setAverageTimes([]);
+        setThroughputTimes([]);
       } finally {
         setIsLoading(false);
       }
@@ -74,6 +81,7 @@ const Dashboard = () => {
           )}
         </div>
 
+        {/* AVERAGE TIMES SPENT ON ORDER STATES */}
         <div className="flex flex-col p-6">
           <h3 className="font-bold text-white mb-2">Average Times Spent</h3>
           {isLoading ? (
@@ -96,6 +104,39 @@ const Dashboard = () => {
                     </td>
                     <td className="border border-gray-200 px-4 py-2">
                       {item.minutes}m {item.seconds}s
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <div>No average times available.</div>
+          )}
+        </div>
+
+        {/* NUMBER OF ORDERS SERVED DURING OFFICE HOURS (7:00 - 22:00) */}
+        <div className="flex flex-col p-6">
+          <h3 className="font-bold text-white mb-2">Order Throughput</h3>
+          {isLoading ? (
+            <div>Loading...</div>
+          ) : throughputTimes.length > 0 ? (
+            <table className="min-w-full border-collapse border border-gray-200 text-lg bg-gray-100/50">
+              <thead>
+                <tr className="bg-gray-100">
+                  <th className="border border-gray-200 px-4 py-2">Status</th>
+                  <th className="border border-gray-200 px-4 py-2">
+                    Average Time (min/sec)
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {throughputTimes.map((item, index) => (
+                  <tr key={index} className="hover:bg-gray-50">
+                    <td className="border border-gray-200 px-4 py-2">
+                      {item.order_date}
+                    </td>
+                    <td className="border border-gray-200 px-4 py-2">
+                      {item.throughput}
                     </td>
                   </tr>
                 ))}
