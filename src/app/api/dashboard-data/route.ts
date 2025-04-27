@@ -6,9 +6,16 @@ export async function GET() {
     const sql = neon(process.env.DATABASE_URL!);
 
     // Add array to store the results of the two queries
-    const [itemSales, statusTimes, troughPut, customerOrders] =
-      await sql.transaction([
-        sql`
+    const [
+      itemSales,
+      statusTimes,
+      troughPut,
+      customerOrders,
+      orderStatusPerDateHour,
+      orderStausPerHourTotal,
+      orderStatusPerHourAvg,
+    ] = await sql.transaction([
+      sql`
         SELECT
           brd.brand_name,
           itm.item_name,
@@ -19,7 +26,7 @@ export async function GET() {
         GROUP BY itm.item_name, brd.brand_name
         ORDER BY total_qty DESC
       `,
-        sql`
+      sql`
         SELECT
           current_status,
           CASE current_status
@@ -37,7 +44,7 @@ export async function GET() {
           current_status;
         ;
       `,
-        sql`
+      sql`
         SELECT
           --DATE(delivered.status_update) AS order_date,
           TO_CHAR(delivered.status_update, 'DD-MM-YYYY') AS order_date,
@@ -60,7 +67,7 @@ export async function GET() {
         ORDER BY
           order_date, order_hour;
       `,
-        sql`
+      sql`
         SELECT
           acc.account_id,
           acc.account_name,
@@ -77,16 +84,102 @@ export async function GET() {
         ORDER BY
           acc.account_id;
       `,
-      ]);
+      sql`
+        SELECT
+            TO_CHAR(status_update, 'DD-MM-YYYY') AS order_date,
+            EXTRACT(HOUR FROM status_update) AS order_hour,
+            CASE 
+                WHEN order_status_id = 1 THEN 'Order Received'
+                WHEN order_status_id = 2 THEN 'Order in Progress'
+                WHEN order_status_id = 3 THEN 'Ready for Delivery'
+                WHEN order_status_id = 4 THEN 'Delivered'
+                ELSE 'Unknown Status'
+            END AS current_status_text,
+            COUNT(DISTINCT order_id) AS order_count
+        FROM
+            order_status_history
+        WHERE
+            EXTRACT(HOUR FROM status_update) BETWEEN 7 AND 22
+        GROUP BY
+            TO_CHAR(status_update, 'DD-MM-YYYY'),
+            EXTRACT(HOUR FROM status_update),
+            order_status_id
+        ORDER BY
+            order_date,
+            order_hour,
+            order_status_id;
+      `,
+      sql`
+        SELECT
+            TO_CHAR(EXTRACT(HOUR FROM status_update), 'FM00') || ':00' AS order_hour,
+            CASE order_status_id
+              WHEN 1 THEN 'Order Received'
+              WHEN 2 THEN 'Order Received -> In Progress'
+              WHEN 3 THEN 'In Progress -> Ready for Delivery'
+              WHEN 4 THEN 'Ready for Delivery -> Delivered'
+            END AS current_status_text,
+            order_status_id,
+            COUNT(DISTINCT order_id) AS order_count
+        FROM
+            order_status_history
+        WHERE
+            EXTRACT(HOUR FROM status_update) BETWEEN 7 AND 22
+        GROUP BY
+            EXTRACT(HOUR FROM status_update),
+            order_status_id
+        ORDER BY
+            order_hour,
+            order_status_id;
+      `,
+      sql`
+        SELECT
+            TO_CHAR(EXTRACT(HOUR FROM status_update), 'FM00') || ':00' AS order_hour,
+            CASE order_status_id
+              WHEN 1 THEN 'Order Received'
+              WHEN 2 THEN 'Order Received -> In Progress'
+              WHEN 3 THEN 'In Progress -> Ready for Delivery'
+              WHEN 4 THEN 'Ready for Delivery -> Delivered'
+            END AS current_status_text,
+            order_status_id,
+            TRUNC(AVG(order_count)) AS average_order_count
+        FROM (
+            SELECT
+                status_update,
+                EXTRACT(HOUR FROM status_update) AS hour,
+                order_status_id,
+                COUNT(DISTINCT order_id) AS order_count
+            FROM
+                order_status_history
+            WHERE
+                EXTRACT(HOUR FROM status_update) BETWEEN 7 AND 22
+            GROUP BY
+                status_update,
+                EXTRACT(HOUR FROM status_update),
+                order_status_id
+        ) AS subquery
+        GROUP BY
+            order_hour,
+            order_status_id
+        ORDER BY
+            order_hour,
+            order_status_id;
+      `,
+    ]);
     // console.log("Item Sales:", itemSales);
     // console.log("Status Times:", statusTimes);
     // console.log("Order Throughput:", troughPut);
     // console.log("Orders per Customer:", customerOrders);
+    // console.log("Order Status per Date and Hour:", orderStatusPerDateHour);
+    // console.log("Order Status per Hour Total:", orderStausPerHourTotal);
+    // console.log("Order Status per Hour on Average:", orderStatusPerHourAvg);
     return NextResponse.json({
       itemSales: itemSales || [],
       statusTimes: statusTimes || [],
       troughPut: troughPut || [],
       customerOrders: customerOrders || [],
+      orderStatusPerDateHour: orderStatusPerDateHour || [],
+      orderStausPerHourTotal: orderStausPerHourTotal || [],
+      orderStatusPerHourAvg: orderStatusPerHourAvg || [],
     });
   } catch (error) {
     console.error(`Database error: ${error}`);

@@ -177,6 +177,14 @@ export interface CustomerOrders {
   number_of_orders: number;
 }
 
+export interface OrderStatusHistory {
+  order_date: string;
+  order_hour: number;
+  current_status_text: string;
+  order_count: number;
+  average_order_count: number;
+}
+
 export interface OrderDetailsProps {
   orderDetails?: OrderFormProps["orderData"];
   // orderDetails?: OrderFormProps["orderData"][];

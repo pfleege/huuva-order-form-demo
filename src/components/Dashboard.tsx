@@ -6,6 +6,7 @@ import {
   StatusTime,
   TroughputTime,
   CustomerOrders,
+  OrderStatusHistory,
 } from "@/app/lib/definitions";
 
 const Dashboard = () => {
@@ -14,6 +15,15 @@ const Dashboard = () => {
   const [averageTimes, setAverageTimes] = useState<StatusTime[]>([]);
   const [throughputTimes, setThroughputTimes] = useState<TroughputTime[]>([]);
   const [customerOrders, setCustomerOrders] = useState<CustomerOrders[]>([]);
+  const [orderStatusDateHour, setOrderStatusDateHour] = useState<
+    OrderStatusHistory[]
+  >([]);
+  const [orderStatusHourTotal, setOrderStatusHourTotal] = useState<
+    OrderStatusHistory[]
+  >([]);
+  const [orderStatusHourAvg, setOrderStatusHourAvg] = useState<
+    OrderStatusHistory[]
+  >([]);
 
   useEffect(() => {
     async function fetchData() {
@@ -27,11 +37,17 @@ const Dashboard = () => {
           setAverageTimes(data.statusTimes || []);
           setThroughputTimes(data.troughPut || []);
           setCustomerOrders(data.customerOrders || []);
+          setOrderStatusDateHour(data.orderStatusPerDateHour || []);
+          setOrderStatusHourTotal(data.orderStausPerHourTotal || []);
+          setOrderStatusHourAvg(data.orderStatusPerHourAvg || []);
         } else {
           setPopularItems([]);
           setAverageTimes([]);
           setThroughputTimes([]);
           setCustomerOrders([]);
+          setOrderStatusDateHour([]);
+          setOrderStatusHourTotal([]);
+          setOrderStatusHourAvg([]);
         }
       } catch (error) {
         console.error("Fetching data failed:", error);
@@ -39,6 +55,9 @@ const Dashboard = () => {
         setAverageTimes([]);
         setThroughputTimes([]);
         setCustomerOrders([]);
+        setOrderStatusDateHour([]);
+        setOrderStatusHourTotal([]);
+        setOrderStatusHourAvg([]);
       } finally {
         setIsLoading(false);
       }
@@ -194,6 +213,127 @@ const Dashboard = () => {
                     </td>
                     <td className="border border-gray-200 px-4 py-2">
                       {item.number_of_orders}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <div>No average times available.</div>
+          )}
+        </div>
+
+        {/* ORDER STATUS PER DATE AND HOUR */}
+        <div className="flex flex-col p-6">
+          <h3 className="font-bold text-white mb-2">
+            Order Status per Date and Hour
+          </h3>
+          {isLoading ? (
+            <div>Loading...</div>
+          ) : throughputTimes.length > 0 ? (
+            <table className="min-w-full border-collapse border border-gray-200 text-lg bg-gray-100/50">
+              <thead>
+                <tr className="bg-gray-100">
+                  <th className="border border-gray-200 px-4 py-2">Date</th>
+                  <th className="border border-gray-200 px-4 py-2">Hour</th>
+                  <th className="border border-gray-200 px-4 py-2">Status</th>
+                  <th className="border border-gray-200 px-4 py-2">
+                    Occurance
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {orderStatusDateHour.map((item, index) => (
+                  <tr key={index} className="hover:bg-gray-50">
+                    <td className="border border-gray-200 px-4 py-2">
+                      {item.order_date}
+                    </td>
+                    <td className="border border-gray-200 px-4 py-2">
+                      {item.order_hour}
+                    </td>
+                    <td className="border border-gray-200 px-4 py-2">
+                      {item.current_status_text}
+                    </td>
+                    <td className="border border-gray-200 px-4 py-2">
+                      {item.order_count}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <div>No average times available.</div>
+          )}
+        </div>
+
+        {/* ORDER STATUS PER HOUR (TOTAL) */}
+        <div className="flex flex-col p-6">
+          <h3 className="font-bold text-white mb-2">
+            Order Status per Hour (Total)
+          </h3>
+          {isLoading ? (
+            <div>Loading...</div>
+          ) : throughputTimes.length > 0 ? (
+            <table className="min-w-full border-collapse border border-gray-200 text-lg bg-gray-100/50">
+              <thead>
+                <tr className="bg-gray-100">
+                  <th className="border border-gray-200 px-4 py-2">Hour</th>
+                  <th className="border border-gray-200 px-4 py-2">Status</th>
+                  <th className="border border-gray-200 px-4 py-2">
+                    Occurance
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {orderStatusHourTotal.map((item, index) => (
+                  <tr key={index} className="hover:bg-gray-50">
+                    <td className="border border-gray-200 px-4 py-2">
+                      {item.order_hour}
+                    </td>
+                    <td className="border border-gray-200 px-4 py-2">
+                      {item.current_status_text}
+                    </td>
+                    <td className="border border-gray-200 px-4 py-2">
+                      {item.order_count}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <div>No average times available.</div>
+          )}
+        </div>
+
+        {/* ORDER STATUS PER HOUR (AVERAGE) */}
+        <div className="flex flex-col p-6">
+          <h3 className="font-bold text-white mb-2">
+            Order Status per Hour (Average)
+          </h3>
+          {isLoading ? (
+            <div>Loading...</div>
+          ) : throughputTimes.length > 0 ? (
+            <table className="min-w-full border-collapse border border-gray-200 text-lg bg-gray-100/50">
+              <thead>
+                <tr className="bg-gray-100">
+                  <th className="border border-gray-200 px-4 py-2">Hour</th>
+                  <th className="border border-gray-200 px-4 py-2">Status</th>
+                  <th className="border border-gray-200 px-4 py-2">
+                    Occurance
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {orderStatusHourAvg.map((item, index) => (
+                  <tr key={index} className="hover:bg-gray-50">
+                    <td className="border border-gray-200 px-4 py-2">
+                      {item.order_hour}
+                    </td>
+                    <td className="border border-gray-200 px-4 py-2">
+                      {item.current_status_text}
+                    </td>
+                    <td className="border border-gray-200 px-4 py-2">
+                      {item.average_order_count}
                     </td>
                   </tr>
                 ))}
