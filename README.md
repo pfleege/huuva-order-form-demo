@@ -34,9 +34,10 @@ The Dashboard page currently contain only a simple table that displays the amoun
 
 In the Order by Account page, you can search all orders for a specific customer - you can e.g. test this out by using the "account.1@demo.com" from the available demo data.
 
-The View Orders page displays all current orders that have any other order status than "order delivered". Simply click the "Display Orders" -button to view the active orders. After that, you can click on any of the active orders in order to change its status.
+The Orders page displays all current orders that have any other order status than "order delivered". Simply click the "Display Orders" -button to view the active orders. After that, you can click on any of the active orders in order to change the status for each order item.
 
-Via the final nav link, Add Order, you can add new orders with multiple kitchen/dish combinations (where Kitchen = brand and Dish = item).
+Order Form Logic:
+When you add an order to the database using the "Add New Order" -button, the order will get an initial status of 1 = Order Pending. Once the order status for any of the items change to "In progress", the status for the entire order will automatically change to order_status = 2 (i.e. Order in progress). After this, in order for the entire order's status to change to "Ready for delivery" (happens automatically), each of the items' statuses have to first have their status changed to "Ready for delivery".
 
 ![](./public/orderPage.png)
 
