@@ -10,7 +10,7 @@
 
 The Order Form demo is a brief introductory project on how to connect a PostgreSQL database to a Next.js based project.
 
-To test out the demo, you can thus either use the link below, or download the project and connect it to your own relational database.
+To test out the demo, you can download the project and connect it to your own relational database.
 
 Time spent on building the project: approximately 36-40 hours. Unfortunately a lot of extra time was spent on re-building the database structure, as the original structure proved impractical in the end.
 
@@ -40,10 +40,6 @@ Order Form Logic:
 When you add an order to the database using the "Add New Order" -button, the order will get an initial status of 1 = Order Pending. Once the order status for any of the items change to "In progress", the status for the entire order will automatically change to order_status = 2 (i.e. Order in progress). After this, in order for the entire order's status to change to "Ready for delivery" (happens automatically), each of the items' statuses have to first have their status changed to "Ready for delivery".
 
 ![](./public/orderPage.png)
-
-## Demo
-
-👁️ [Live Demo](https://huuva-order-form-demo.vercel.app/)
 
 ## Built with
 
